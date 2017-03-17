@@ -10,7 +10,7 @@ File.read(filename).split("\n").each do |line|
   rating = info[7]
   stars_count = rating.to_f * 10
   stars = '*'  * stars_count
-  if name.index("Max") || name.index("Godfather")
+  if name.include?("Max")
     puts name + '  ' + rating
     puts stars
   end
