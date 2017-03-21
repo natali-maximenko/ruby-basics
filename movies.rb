@@ -4,12 +4,12 @@ end
 
 filename = ARGV[0] || 'movies.txt'
 
-if !File.exist?(filename)
+unless File.exists?(filename)
   raise ArgumentError, 'File "'+ filename + '" not found'
 end
 
-info = [:link, :title, :year, :country, :release_date, :genre, :length, :rating, :director, :actors]
-movies_list = File.open(filename).readlines.map! {|l| info.zip(l.split('|')).to_h }
+info = %i[link title year country release_date genre length rating director actors]
+movies_list = File.open(filename).readlines.map {|l| info.zip(l.split('|')).to_h }
 
 # sort by length desc
 sorted_by_size = movies_list.sort_by { |x| x[:length].to_i}.reverse
