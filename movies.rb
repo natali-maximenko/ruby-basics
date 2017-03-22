@@ -47,5 +47,5 @@ puts
 puts 'Statistic film releases by month'
 movies_list.reject { |movie| movie.release_date.size < 7 } # delete release_date without month
   .group_by { |movie| Date.strptime(movie.release_date, '%Y-%m').month } # get arrays by month
-  .sort_by { |list| list.first } # sort by month
+  .sort_by(&:first) # sort by month
   .each { |month, movies| puts "#{Date::MONTHNAMES[month]}: #{movies.count} films" }
