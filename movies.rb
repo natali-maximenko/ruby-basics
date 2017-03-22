@@ -13,7 +13,7 @@ unless File.exists?(filename)
 end
 
 INFO = %i[link title year country release_date genre length rating director actors]
-movies_list = CSV.read(filename, { :col_sep => '|' }).map do |movie|
+movies_list = CSV.read(filename, col_sep: '|').map do |movie|
   OpenStruct.new(INFO.zip(movie).to_h)
 end
 
@@ -25,13 +25,13 @@ puts
 
 # comedies sort by release date asc
 sorted_by_release = movies_list.select { |movie| movie.genre.include?('Comedy') }
-  .sort_by { |movie| movie.release_date }
+  .sort_by(&:release_date)
   .first(10)
 puts '10 comedies sorted release date asc'
 sorted_by_release.each { |movie| print_movie_info(movie) }
 puts
 
-directors = movies_list.map {|movie| movie.director }
+directors = movies_list.map(&:director)
   .uniq
   .sort_by { |director| director.split.last }
 puts 'Unique directors array sorted by firstname asc'
