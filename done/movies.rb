@@ -9,11 +9,13 @@ end
 filename = ARGV[0] || 'movies.txt'
 
 unless File.exists?(filename)
-  raise ArgumentError, 'File "'+ filename + '" not found'
+  raise ArgumentError, "File #{filename} not found"
 end
 
 INFO = %i[link title year country release_date genre length rating director actors]
 movies_list = CSV.read(filename, col_sep: '|').map do |movie|
+  p movie
+  exit()
   OpenStruct.new(INFO.zip(movie).to_h)
 end
 
