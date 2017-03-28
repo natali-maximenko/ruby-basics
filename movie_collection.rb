@@ -27,16 +27,7 @@ class MovieCollection
     filtered_collection = @collection
     attrs_hash.each {|key, value|
       filtered_collection = filtered_collection.select { |movie|
-        if value.instance_of?(Range)
-          value.include?(movie.send(key).to_i)
-        elsif value.instance_of?(Regexp)
-          # ruby v2.1.5 not have str.match?
-          # match(val).nil? not work
-          nil != movie.send(key).join(',').match(value)
-        else
-          movie.send(key).include?(value)
-        end
-
+          movie.match?(key, value)
       }
     }
     filtered_collection

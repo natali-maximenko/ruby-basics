@@ -28,12 +28,24 @@ class Movie
     genre.include?(search_genre)
   end
 
+  def match?(key, value)
+    if self.send(key).instance_of?(Array)
+      self.send(key).any? { |element| value === element }
+    else
+      value === self.send(key)
+    end
+  end
+
   def actors
     @actors.split(',')
   end
 
   def genre
     @genre.split(',')
+  end
+
+  def year
+    @year.to_i
   end
 
   def inspect
