@@ -17,11 +17,11 @@ class Movie
 
   def self.load_from_csv(string, pattern = '|')
     info = string.split(pattern)
-    new(info[0], info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8], info[9])
+    new(*info)
   end
 
   def self.load_from_array(info)
-    new(info[0], info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8], info[9])
+    new(*info)
   end
 
   def has_genre?(search_genre)

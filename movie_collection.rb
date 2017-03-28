@@ -23,8 +23,23 @@ class MovieCollection
                .sort_by { |movie| movie.send(field)  }
   end
 
-  def filter(field, value)
-    @collection.find_all { |movie| movie.send(field).include?(value) }
+  def filter(**attrs_hash)
+    filtered_collection = @collection
+    attrs_hash.each {|key, value|
+      filtered_collection = filtered_collection.select { |movie|
+        if value.instance_of?(Range)
+          value.include?(movie.send(key).to_i)
+        elsif value.instance_of?(Regexp)
+          # ruby v2.1.5 not have str.match?
+          # match(val).nil? not work
+          nil != movie.send(key).join(',').match(value)
+        else
+          movie.send(key).include?(value)
+        end
+
+      }
+    }
+    filtered_collection
   end
 
   def stats(field, value=nil)
