@@ -14,4 +14,6 @@ p movies.filter(genre: 'Comedy').first(10)
 puts 'genre: Drama, country: Italy, year: 1987..1997'
 p movies.filter(genre: 'Drama', country: 'Italy', year: 1987..1997)
 p movies.filter(actors: /Pacino/)
-#movies.stats(:director)
+movies.stats(:director)
+movies.stats(:year)
+movies.stats(:country)

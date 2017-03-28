@@ -33,17 +33,9 @@ class MovieCollection
     filtered_collection
   end
 
-  def stats(field, value=nil)
-    if field == :director
-      @collection.group_by { |movie| movie.send(field) } # get arrays by field
-                 .sort_by(&:first) # sort by field
-                 .each { |attr, movies| puts "#{attr}: #{movies.count} films" }
-    elsif field == :actors
-      @collection.select { |movie| movie.send(field).include?(value) }
-                 .group_by { |movie| value }
-                 .sort_by(&:first) # sort by field
-                 .each { |attr, movies| puts "#{attr}: #{movies.count} films" }
-    end
-
+  def stats(field)
+      @collection.group_by { |movie| movie.send(field) }
+          .sort_by(&:first)
+          .each { |attr, movies| puts "#{attr}: #{movies.count} films" }
   end
 end
