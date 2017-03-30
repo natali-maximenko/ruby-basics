@@ -15,14 +15,14 @@ movies = MovieCollection.new(filename)
 #p movies.filter(genre: 'Drama', country: 'Italy', year: 1987..1997)
 #puts 'films with Pacino'
 #p movies.filter(actors: /Pacino/)
+puts 'statistic by genre'
+p movies.stats(:genre)
 puts 'statistic by director'
 p movies.stats(:director)
 puts
 puts 'statistic by country'
 p movies.stats(:country)
 puts
-puts 'statistic by genre'
-p movies.stats(:genre)
 puts
 puts 'statistic by actors'
 p movies.stats(:actors)

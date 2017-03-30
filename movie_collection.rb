@@ -34,13 +34,9 @@ class MovieCollection
   end
 
   def stats(key)
-    @collection.flat_map{|movie|
-      field = movie.send(key)
-      if field.instance_of?(Array)
-        field.map {|v| {v => self.filter(key => v).count} }
-      else
-        {field => self.filter(key => field).count}
-      end
-    }.uniq
+    @collection.flat_map(&key)
+               .sort
+               .group_by { |v| v }
+               .map { |v, values| {v => values.count} }
   end
 end
