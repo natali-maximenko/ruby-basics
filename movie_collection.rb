@@ -24,13 +24,9 @@ class MovieCollection
   end
 
   def filter(**attrs_hash)
-    filtered_collection = @collection
-    attrs_hash.each {|key, value|
-      filtered_collection = filtered_collection.select { |movie|
-          movie.match?(key, value)
-      }
+    attrs_hash.reduce(@collection) { |memo, filter|
+      memo.select { |movie| movie.match?(filter[0], filter[1]) }
     }
-    filtered_collection
   end
 
   def stats(key)
