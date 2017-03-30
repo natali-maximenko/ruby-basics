@@ -33,9 +33,22 @@ class MovieCollection
     filtered_collection
   end
 
-  def stats(field)
-      @collection.group_by { |movie| movie.send(field) }
-          .sort_by(&:first)
-          .each { |attr, movies| puts "#{attr}: #{movies.count} films" }
+  def stats(key)
+    keys = []
+    @collection.each { |movie|
+      field = movie.send(key)
+      if field.instance_of?(Array)
+        field.each {|v| keys.push(v) }
+      else
+        keys.push(field)
+      end
+    }
+    keys.uniq!
+        .sort!
+
+    counts = keys.map {|field|
+      self.filter(key => field).count
+    }
+    keys.zip(counts).to_h
   end
 end

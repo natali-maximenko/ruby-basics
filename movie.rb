@@ -29,10 +29,11 @@ class Movie
   end
 
   def match?(key, value)
-    if self.send(key).instance_of?(Array)
-      self.send(key).any? { |element| value === element }
+    field = self.send(key)
+    if field.instance_of?(Array)
+      field.grep(value).any?
     else
-      value === self.send(key)
+      value === field
     end
   end
 
