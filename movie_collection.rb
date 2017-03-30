@@ -34,21 +34,13 @@ class MovieCollection
   end
 
   def stats(key)
-    keys = []
-    @collection.each { |movie|
+    @collection.flat_map{|movie|
       field = movie.send(key)
       if field.instance_of?(Array)
-        field.each {|v| keys.push(v) }
+        field.map {|v| {v => self.filter(key => v).count} }
       else
-        keys.push(field)
+        {field => self.filter(key => field).count}
       end
-    }
-    keys.uniq!
-        .sort!
-
-    counts = keys.map {|field|
-      self.filter(key => field).count
-    }
-    keys.zip(counts).to_h
+    }.uniq
   end
 end
