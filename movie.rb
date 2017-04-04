@@ -42,10 +42,6 @@ class Movie
     @actors.split(',')
   end
 
-  def actors_string
-    @actors
-  end
-
   def genre
     @genre.split(',')
   end
@@ -101,7 +97,8 @@ class ModernMovie < Movie
   end
 
   def to_s
-    "#@title - modern movie: play #@actors_string"
+    actors_string = @actors
+    "#@title - modern movie: play #{actors_string}"
   end
 
   def inspect
@@ -116,7 +113,7 @@ class NewMovie < Movie
   end
 
   def to_s
-    years = Date.now.year - @year
+    years = 2017 - @year.to_i #Date.now.year
     "#@title - latest, was released #{years} years ago!"
   end
 
