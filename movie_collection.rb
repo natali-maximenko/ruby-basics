@@ -1,5 +1,6 @@
 require './movie.rb'
 require 'csv'
+require 'date'
 
 class MovieCollection
   attr_accessor :collection
@@ -10,7 +11,16 @@ class MovieCollection
     end
 
     @collection = CSV.read(filename, col_sep: '|').map do |movie|
-      Movie.load_from_array(movie)
+      case movie[2].to_i
+        when 1900..1944
+          AncientMovie.load_from_array(movie)
+        when 1945..1967
+          ClassicMovie.load_from_array(movie)
+        when 1968..1999
+          ModernMovie.load_from_array(movie)
+        else
+          NewMovie.load_from_array(movie)
+      end
     end
   end
 

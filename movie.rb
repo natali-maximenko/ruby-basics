@@ -1,6 +1,6 @@
 class Movie
-  attr_accessor :link, :title, :year, :country, :date,
-                :genre, :length, :rating, :director, :actors
+  attr_accessor :link, :title, :year, :country, :date, :genre,
+                :length, :rating, :director, :actors, :period
 
   def initialize(link, title, year, country, date, genre, length, rating, director, actors)
     @link = link
@@ -13,6 +13,7 @@ class Movie
     @rating = rating
     @director = director
     @actors = actors
+    @period = nil
   end
 
   def self.load_from_csv(string, pattern = '|')
@@ -41,6 +42,10 @@ class Movie
     @actors.split(',')
   end
 
+  def actors_string
+    @actors
+  end
+
   def genre
     @genre.split(',')
   end
@@ -55,5 +60,67 @@ class Movie
 
   def to_s
     "Movie: #@title (#@date; #@genre; #@country; #@rating) - #@length"
+  end
+end
+
+class AncientMovie < Movie
+
+  def initialize(link, title, year, country, date, genre, length, rating, director, actors)
+    super(link, title, year, country, date, genre, length, rating, director, actors)
+    @period = :ancient
+  end
+
+  def to_s
+    "#@title - old movie (#@year year)"
+  end
+
+  def inspect
+    "<AncientMovie title: '#@title', year: #@year, country: #@country, date: #@date, genre: '#@genre', length: #@length, rating: #@rating, director: '#@director', actors: '#@actors'>"
+  end
+end
+
+class ClassicMovie < Movie
+  def initialize(link, title, year, country, date, genre, length, rating, director, actors)
+    super(link, title, year, country, date, genre, length, rating, director, actors)
+    @period = :classic
+  end
+
+  def to_s
+    "#@title - classic movie, director #@director"
+  end
+
+  def inspect
+    "<ClassicMovie title: '#@title', year: #@year, country: #@country, date: #@date, genre: '#@genre', length: #@length, rating: #@rating, director: '#@director', actors: '#@actors'>"
+  end
+end
+
+class ModernMovie < Movie
+  def initialize(link, title, year, country, date, genre, length, rating, director, actors)
+    super(link, title, year, country, date, genre, length, rating, director, actors)
+    @period = :modern
+  end
+
+  def to_s
+    "#@title - modern movie: play #@actors_string"
+  end
+
+  def inspect
+    "<ModernMovie title: '#@title', year: #@year, country: #@country, date: #@date, genre: '#@genre', length: #@length, rating: #@rating, director: '#@director', actors: '#@actors'>"
+  end
+end
+
+class NewMovie < Movie
+  def initialize(link, title, year, country, date, genre, length, rating, director, actors)
+    super(link, title, year, country, date, genre, length, rating, director, actors)
+    @period = :new
+  end
+
+  def to_s
+    years = Date.now.year - @year
+    "#@title - latest, was released #{years} years ago!"
+  end
+
+  def inspect
+    "<NewMovie title: '#@title', year: #@year, country: #@country, date: #@date, genre: '#@genre', length: #@length, rating: #@rating, director: '#@director', actors: '#@actors'>"
   end
 end
