@@ -6,7 +6,7 @@ filename = ARGV[0] || 'movies.txt'
 
 movies = MovieCollection.new(filename)
 netflix = Netflix.new(movies)
-#cinema.show(movies.filter(genre: 'Comedy').first)
+
 netflix.pay(10)
 netflix.show(genre: 'Comedy', period: :classic)
 p netflix.account
