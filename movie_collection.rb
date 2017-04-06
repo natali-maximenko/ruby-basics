@@ -11,16 +11,7 @@ class MovieCollection
     end
 
     @collection = CSV.read(filename, col_sep: '|').map do |movie|
-      case movie[2].to_i
-        when 1900..1944
-          AncientMovie.load_from_array(movie)
-        when 1945..1967
-          ClassicMovie.load_from_array(movie)
-        when 1968..1999
-          ModernMovie.load_from_array(movie)
-        else
-          NewMovie.load_from_array(movie)
-      end
+      Movie.create(movie)
     end
   end
 
@@ -55,9 +46,10 @@ end
 
 class Netflix < MovieCollection
   attr_reader :account
+  PRICES = {ancient: 1, classic: 1.5, modern: 3, new: 5}
 
   def initialize(filename)
-    super(filename)
+    super
     @account = 0
   end
 
@@ -74,8 +66,7 @@ class Netflix < MovieCollection
   end
 
   def get_price(period)
-    payment = {ancient: 1, classic: 1.5, modern: 3, new: 5}
-    payment.fetch(period)
+    PRICES.fetch(period)
   end
 
   def take_payment(movie)
