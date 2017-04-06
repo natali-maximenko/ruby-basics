@@ -1,11 +1,9 @@
 require './movie.rb'
 require './movie_collection.rb'
-require './cinema.rb'
 
 filename = ARGV[0] || 'movies.txt'
 
-movies = MovieCollection.new(filename)
-netflix = Netflix.new(movies)
+netflix = Netflix.new(filename)
 
 netflix.pay(10)
 netflix.show(genre: 'Comedy', period: :classic)

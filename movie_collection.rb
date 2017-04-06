@@ -45,4 +45,54 @@ class MovieCollection
                .group_by { |v| v }
                .map { |v, values| {v => values.count} }
   end
+
+  def show(movie)
+    start_time = Time.now
+    end_time = start_time + 60 * movie.length.to_i
+    puts "Now showing: #{movie.title}" + start_time.strftime(" %I:%M%p") + end_time.strftime(" - %I:%M%p")
+  end
+end
+
+class Netflix < MovieCollection
+  attr_reader :account
+
+  def initialize(filename)
+    super(filename)
+    @account = 0
+  end
+
+  def show(**attrs_hash)
+    filtered = filter(attrs_hash)
+    filtered.each { |film|
+      take_payment(film)
+      puts film
+    }
+  end
+
+  def pay(amount)
+    @account += amount
+  end
+
+  def get_price(period)
+    payment = {ancient: 1, classic: 1.5, modern: 3, new: 5}
+    payment.fetch(period)
+  end
+
+  def take_payment(movie)
+    price = get_price(movie.period)
+    new_account = @account - price
+    if new_account < 0
+      raise ArgumentError, "Need more money. Film cost #{price}, you have #{@account} on your account"
+    end
+    @account = new_account
+  end
+
+  def how_much?(movie_title)
+    movie = filter(title: movie_title).first
+    get_price(movie.period)
+  end
+end
+
+class Theatre < MovieCollection
+
 end
