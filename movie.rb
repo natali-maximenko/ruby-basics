@@ -1,3 +1,5 @@
+require 'date'
+
 class Movie
   attr_accessor :link, :title, :year, :country, :date, :genre,
                 :length, :rating, :director, :actors, :period
@@ -113,7 +115,7 @@ class NewMovie < Movie
   end
 
   def to_s
-    years = 2017 - @year.to_i #Date.now.year
+    years = Date.today.year - @year.to_i
     "#@title - latest, was released #{years} years ago!"
   end
 

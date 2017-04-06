@@ -79,6 +79,10 @@ class Netflix < MovieCollection
   end
 
   def take_payment(movie)
+    if @account < 1
+      raise ArgumentError, "You have no money on your account"
+    end
+
     price = get_price(movie.period)
     new_account = @account - price
     if new_account < 0

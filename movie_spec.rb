@@ -1,4 +1,5 @@
 require 'rspec'
+require 'date'
 require './movie.rb'
 
 describe AncientMovie do
@@ -33,7 +34,7 @@ end
 describe NewMovie do
   it 'return movie description like <title> - ' do
     movie = NewMovie.load_from_csv('http://imdb.com/title/tt1345836/?ref_=chttp_tt_61|The Dark Knight Rises|2012|USA|2012-07-20|Action,Thriller|165 min|8.5|Christopher Nolan|Christian Bale,Tom Hardy,Anne Hathaway')
-    years = 2017 - movie.year.to_i
+    years = Date.today.year - movie.year.to_i
     expect(movie.to_s).to eq("#{movie.title} - latest, was released #{years} years ago!")
   end
 end
