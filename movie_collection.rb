@@ -44,6 +44,10 @@ class MovieCollection
   end
 end
 
+class NegativeAmount < StandardError; end
+class NoMoney < StandardError; end
+class NotEnoughMoney < StandardError; end
+
 class Netflix < MovieCollection
   attr_reader :account
   PRICES = {ancient: 1, classic: 1.5, modern: 3, new: 5}
@@ -62,6 +66,7 @@ class Netflix < MovieCollection
   end
 
   def pay(amount)
+    raise NegativeAmount if amount < 0
     @account += amount
   end
 
@@ -70,14 +75,12 @@ class Netflix < MovieCollection
   end
 
   def take_payment(movie)
-    if @account < 1
-      raise ArgumentError, "You have no money on your account"
-    end
+    raise NoMoney, "You have no money on your account" if @account < 1
 
     price = get_price(movie.period)
     new_account = @account - price
     if new_account < 0
-      raise ArgumentError, "Need more money. Film cost #{price}, you have #{@account} on your account"
+      raise NotEnoughMoney, "Need more money. Film cost #{price}, you have #{@account} on your account"
     end
     @account = new_account
   end
