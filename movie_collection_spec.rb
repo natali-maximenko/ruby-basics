@@ -10,18 +10,18 @@ describe Netflix do
     end
 
     it 'fails on negative amounts' do
-      expect { netflix.pay(-5) }.to raise_error NegativeAmount
+      expect { netflix.pay(-5) }.to raise_error ArgumentError
     end
   end
 
   describe '#show' do
     it 'fails when no money' do
-      expect { netflix.show(genre: 'Comedy', period: :classic) }.to raise_error NoMoney
+      expect { netflix.show(genre: 'Comedy', period: :classic) }.to raise_error ArgumentError
     end
 
     it 'fails when need more money' do
       netflix.pay(7)
-      expect { netflix.show(genre: 'Comedy', period: :classic) }.to raise_error NotEnoughMoney
+      expect { netflix.show(genre: 'Comedy', period: :classic) }.to raise_error ArgumentError
     end
 
     it 'shows all selected films' do

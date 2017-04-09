@@ -2,7 +2,7 @@ require 'date'
 
 class Movie
   attr_accessor :link, :title, :year, :country, :date, :genre,
-                :length, :rating, :director, :actors, :period
+                :length, :rating, :director, :actors, :collection
 
   def initialize(link, title, year, country, date, genre, length, rating, director, actors)
     @link = link
@@ -15,6 +15,7 @@ class Movie
     @rating = rating
     @director = director
     @actors = actors
+    @collection = nil
   end
 
   def self.load_from_csv(string, pattern = '|')
@@ -29,7 +30,7 @@ class Movie
   def self.create(movie)
     case movie[2].to_i
       when 1900..1944
-        AncientMovie.load_from_array(movie)
+        AncientMovie.load_from_array(movie, )
       when 1945..1967
         ClassicMovie.load_from_array(movie)
       when 1968..1999
@@ -37,6 +38,10 @@ class Movie
       else
         NewMovie.load_from_array(movie)
     end
+  end
+
+  def load_collection(collection)
+    @collection = collection
   end
 
   def has_genre?(search_genre)
@@ -93,7 +98,12 @@ class ClassicMovie < Movie
   end
 
   def to_s
-    "#{@title} - classic movie, director #{@director}"
+    if @collection.nil?
+      raise ArgumentError, "Have no info about movies collection"
+    else
+      movies = @collection.filter(director: @director).count
+    end
+    "#{@title} - classic movie, director #{@director} (#{movies} movies in top-250)"
   end
 
   def inspect
