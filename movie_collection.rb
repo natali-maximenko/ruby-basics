@@ -57,7 +57,7 @@ class Netflix < MovieCollection
     filtered = filter(attrs_hash)
     film = filtered.first
     take_payment(film)
-    puts film
+    super(film)
   end
 
   def pay(amount)
@@ -82,10 +82,44 @@ class Netflix < MovieCollection
 
   def how_much?(movie_title)
     movie = filter(title: movie_title).first
+    raise ArgumentError, "Movie '#{movie_title}' not found" if movie.nil?
     get_price(movie.period)
   end
 end
 
 class Theatre < MovieCollection
+  DAYTIME = {
+      morning: {period: :ancient},
+      day: {genre: ['Comedy', 'Adventure']},
+      evening: {genre: ['Drama', 'Horror']}
+  }
+
+  def show(daytime)
+    raise ArgumentError, "Daytime #{daytime} is not valid" unless DAYTIME.key?(daytime)
+    movies = case daytime
+      when :morning
+       filter(DAYTIME[:morning])
+      when :day
+       @collection.select {|movie| movie.match?(:genre, 'Comedy') || movie.match?(:genre, 'Adventure')}
+      when :evening
+       @collection.select {|movie| movie.match?(:genre, 'Drama') || movie.match?(:genre, 'Horror')}
+    end
+    super(movies.first)
+  end
+
+  def when?(movie_title)
+    movie = filter(title: movie_title).first
+    raise ArgumentError, "Movie '#{movie_title}' not found" if movie.nil?
+    if movie.match?(:period, :ancient)
+      time = 'morning'
+    elsif movie.match?(:genre, 'Comedy') || movie.match?(:genre, 'Adventure')
+      time = 'day'
+    elsif movie.match?(:genre, 'Drama') || movie.match?(:genre, 'Horror')
+      time = 'evening'
+    else
+      raise ArgumentError, "You can't view movie '#{movie_title}'"
+    end
+    time
+  end
 
 end

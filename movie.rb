@@ -30,7 +30,7 @@ class Movie
   def self.create(movie)
     case movie[2].to_i
       when 1900..1944
-        AncientMovie.load_from_array(movie, )
+        AncientMovie.load_from_array(movie)
       when 1945..1967
         ClassicMovie.load_from_array(movie)
       when 1968..1999
