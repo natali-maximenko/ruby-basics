@@ -27,7 +27,8 @@ class Movie
     new(*info)
   end
 
-  def self.create(movie)
+  def self.create(movie, collection = nil)
+    load_collection(collection) unless collection.nil?
     case movie[2].to_i
       when 1900..1944
         AncientMovie.load_from_array(movie)
@@ -51,7 +52,11 @@ class Movie
   def match?(key, value)
     field = self.send(key)
     if field.instance_of?(Array)
-      field.grep(value).any?
+      if value.instance_of?(Array)
+        value.any? {|v| field.include?(v) }
+      else
+        field.grep(value).any?
+      end
     else
       value === field
     end
@@ -70,7 +75,7 @@ class Movie
   end
 
   def inspect
-    "<Movie title: '#{@title}', year: #{@year}, country: #{@country}, date: #{@date}, genre: '#{@genre}', length: #{@length}, rating: #{@rating}, director: '#{@director}', actors: '#{@actors}'>\n"
+    "<#{self.class.name} title: '#{@title}', year: #{@year}, country: #{@country}, date: #{@date}, genre: '#{@genre}', length: #{@length}, rating: #{@rating}, director: '#{@director}', actors: '#{@actors}'>\n"
   end
 
   def to_s
@@ -86,10 +91,6 @@ class AncientMovie < Movie
   def to_s
     "#{@title} - old movie (#{@year} year)"
   end
-
-  def inspect
-    "<AncientMovie title: '#{@title}', year: #{@year}, country: #{@country}, date: #{@date}, genre: '#{@genre}', length: #{@length}, rating: #{@rating}, director: '#{@director}', actors: '#{@actors}'>"
-  end
 end
 
 class ClassicMovie < Movie
@@ -98,16 +99,9 @@ class ClassicMovie < Movie
   end
 
   def to_s
-    if @collection.nil?
-      raise ArgumentError, "Have no info about movies collection"
-    else
-      movies = @collection.filter(director: @director).count
-    end
+    raise ArgumentError, "Have no info about movies collection" if @collection.nil?
+    movies = @collection.filter(director: @director).count
     "#{@title} - classic movie, director #{@director} (#{movies} movies in top-250)"
-  end
-
-  def inspect
-    "<ClassicMovie title: '#{@title}', year: #{@year}, country: #{@country}, date: #{@date}, genre: '#{@genre}', length: #{@length}, rating: #{@rating}, director: '#{@director}', actors: '#{@actors}'>"
   end
 end
 
@@ -119,10 +113,6 @@ class ModernMovie < Movie
   def to_s
     "#{@title} - modern movie: play #{@actors}"
   end
-
-  def inspect
-    "<ModernMovie title: '#{@title}', year: #{@year}, country: #{@country}, date: #{@date}, genre: '#{@genre}', length: #{@length}, rating: #{@rating}, director: '#{@director}', actors: '#{@actors}'>"
-  end
 end
 
 class NewMovie < Movie
@@ -132,9 +122,5 @@ class NewMovie < Movie
 
   def to_s
     "#{@title} - latest, was released #{Date.today.year - @year} years ago!"
-  end
-
-  def inspect
-    "<NewMovie title: '#{@title}', year: #{@year}, country: #{@country}, date: #{@date}, genre: '#{@genre}', length: #{@length}, rating: #{@rating}, director: '#{@director}', actors: '#{@actors}'>"
   end
 end

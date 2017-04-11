@@ -1,20 +1,20 @@
-require './movie.rb'
 require './movie_collection.rb'
+require './netflix.rb'
+require './theatre.rb'
 
 filename = ARGV[0] || 'movies.txt'
 
 movies = MovieCollection.new(filename)
 filtered = movies.filter(genre: 'Comedy', period: :classic)
-filtered.each {|movie| movie.load_collection(movies) }
 puts filtered
 
 netflix = Netflix.new(filename)
 netflix.pay(10)
 netflix.show(genre: 'Comedy', period: :modern)
-p netflix.account
+#p netflix.account
 p netflix.how_much?('The Terminator')
 #p netflix.how_much?('Sex and the city')
-
+puts
 theatre = Theatre.new(filename)
 theatre.show(:day)
 #theatre.show(:night)
