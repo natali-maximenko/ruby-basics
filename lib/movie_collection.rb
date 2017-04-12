@@ -1,9 +1,10 @@
-require './movie.rb'
+require_relative 'movie'
 require 'csv'
 require 'date'
 
 class MovieCollection
   attr_accessor :collection
+  TIMEFORMAT = '%I:%M%p'
 
   def initialize(filename)
     unless File.exists?(filename)
@@ -40,6 +41,6 @@ class MovieCollection
   def show(movie)
     start_time = Time.now
     end_time = start_time + 60 * movie.length.to_i
-    puts "Now showing: #{movie.title}" + start_time.strftime(" %I:%M%p") + end_time.strftime(" - %I:%M%p")
+    puts "Now showing %s (%s-%s)" % [movie.title, start_time.strftime(TIMEFORMAT), end_time.strftime(TIMEFORMAT)]
   end
 end

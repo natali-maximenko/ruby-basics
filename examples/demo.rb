@@ -1,6 +1,6 @@
-require './movie_collection.rb'
-require './netflix.rb'
-require './theatre.rb'
+require_relative '../lib/movie_collection'
+require_relative '../lib/netflix'
+require_relative '../lib/theatre'
 
 filename = ARGV[0] || 'movies.txt'
 

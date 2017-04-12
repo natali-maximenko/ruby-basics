@@ -1,5 +1,5 @@
 require 'rspec'
-require './netflix.rb'
+require_relative '../lib/netflix'
 
 describe Netflix do
   let(:netflix) { Netflix.new('movies.txt') }

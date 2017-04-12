@@ -1,5 +1,5 @@
 require 'rspec'
-require './theatre.rb'
+require_relative '../lib/theatre'
 
 describe Theatre do
   let(:theatre) { Theatre.new('movies.txt') }
