@@ -11,11 +11,8 @@ class MovieCollection
     end
 
     @collection = CSV.read(filename, col_sep: '|').map do |movie|
-      Movie.create(movie)
+      Movie.create(movie, self)
     end
-    @collection.each { |movie|
-      movie.load_collection(self)
-    }
   end
 
   def all

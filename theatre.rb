@@ -16,15 +16,10 @@ class Theatre < MovieCollection
   def when?(movie_title)
     movie = filter(title: movie_title).first
     raise ArgumentError, "Movie '#{movie_title}' not found" if movie.nil?
-    movietime = nil
-    DAYTIME.each_pair { |time, filter|
-      filter.each_pair { |key, value|
-        movietime = time if movie.match?(key, value)
-      }
+    movietime = DAYTIME.keys.detect {|time|
+      DAYTIME[time].any? {|key, value| movie.match?(key, value)}
     }
-    if movietime.nil?
-      raise ArgumentError, "You can't view movie '#{movie_title}'"
-    end
+    raise ArgumentError, "You can't view movie '#{movie_title}'" if movietime.nil?
     movietime
   end
 

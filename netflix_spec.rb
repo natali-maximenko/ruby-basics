@@ -10,41 +10,43 @@ describe Netflix do
     end
 
     it 'fails on negative amounts' do
-      expect { netflix.pay(-5) }.to raise_error ArgumentError, "Amount should be positive, -5 passed"
+      expect { netflix.pay(-5) }.to raise_error ArgumentError, 'Amount should be positive, -5 passed'
     end
   end
 
   describe '#show' do
-    let(:payments) { {not_enough: 1, okey: 5} }
     let(:classic_comedies) { {genre: 'Comedy', period: :classic} }
 
     context 'when no money' do
+      subject { netflix.show(classic_comedies) }
       it 'fails' do
-        expect { netflix.show(classic_comedies) }.to raise_error ArgumentError, "You have no money on your account"
+        expect{ subject }.to raise_error ArgumentError, 'You have no money on your account'
       end
     end
 
-    context 'when need more money' do
-      before(:example) do
-        netflix.pay(payments[:not_enough])
+    context 'when paid' do
+      before { netflix.pay(amount) }
+      subject { netflix.show(classic_comedies) }
+
+      context 'when not enough' do
+        let(:amount) { 1 }
+        it 'fails' do
+          expect { subject }.to raise_error ArgumentError, 'Need more money. Film cost 1.5, you have 1 on your account'
+        end
       end
 
-      it 'fails' do
-        price = Netflix::PRICES[:classic]
-        expect { netflix.show(classic_comedies) }.to raise_error ArgumentError, "Need more money. Film cost #{price}, you have #{netflix.account} on your account"
-      end
-    end
-
-    context 'all ok' do
-      before(:example) do
-        netflix.pay(payments[:okey])
-      end
-      it 'shows selected film' do
-        movie = netflix.filter(classic_comedies).first
-        start_time = Time.now
-        end_time = start_time + 60 * movie.length.to_i
-        message = "Now showing: #{movie.title}"+ start_time.strftime(" %I:%M%p") + end_time.strftime(" - %I:%M%p")+"\n"
-        expect { netflix.show(classic_comedies) }.to output(message).to_stdout
+      context 'when enough' do
+        let(:amount) { 5 }
+        let(:movie_title) { "Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb" }
+        let(:movie_length) { 95 }
+        let(:message) do
+          start_time = Time.now
+          end_time = start_time + 60 * movie_length
+          "Now showing: #{movie_title}"+ start_time.strftime(" %I:%M%p") + end_time.strftime(" - %I:%M%p")+"\n"
+        end
+        it 'shows selected film' do
+          expect { subject }.to output(message).to_stdout
+        end
       end
     end
 

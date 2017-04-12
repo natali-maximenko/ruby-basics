@@ -4,7 +4,7 @@ class Movie
   attr_accessor :link, :title, :year, :country, :date, :genre,
                 :length, :rating, :director, :actors, :collection
 
-  def initialize(link, title, year, country, date, genre, length, rating, director, actors)
+  def initialize(link, title, year, country, date, genre, length, rating, director, actors, collection = nil)
     @link = link
     @title = title
     @year = year
@@ -15,7 +15,7 @@ class Movie
     @rating = rating
     @director = director
     @actors = actors
-    @collection = nil
+    @collection = collection
   end
 
   def self.load_from_csv(string, pattern = '|')
@@ -28,16 +28,16 @@ class Movie
   end
 
   def self.create(movie, collection = nil)
-    load_collection(collection) unless collection.nil?
+    movie.push(collection)
     case movie[2].to_i
       when 1900..1944
-        AncientMovie.load_from_array(movie)
+        AncientMovie.new(*movie)
       when 1945..1967
-        ClassicMovie.load_from_array(movie)
+        ClassicMovie.new(*movie)
       when 1968..1999
-        ModernMovie.load_from_array(movie)
+        ModernMovie.new(*movie)
       else
-        NewMovie.load_from_array(movie)
+        NewMovie.new(*movie)
     end
   end
 
@@ -121,6 +121,7 @@ class NewMovie < Movie
   end
 
   def to_s
-    "#{@title} - latest, was released #{Date.today.year - @year} years ago!"
+    years = Date.today.year.to_i - @year.to_i
+    "#{@title} - latest, was released #{years.to_s} years ago!"
   end
 end
