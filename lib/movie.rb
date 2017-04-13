@@ -29,7 +29,9 @@ class Movie
 
   def self.create(movie, collection = nil)
     movie.push(collection)
-    case movie[2].to_i
+    year = movie[2]
+    raise ArgumentError, "#{year} is not valid year" if /\D/.match(year) || year.to_i < 1900
+    case year.to_i
       when 1900..1944
         AncientMovie.new(*movie)
       when 1945..1967
@@ -39,10 +41,6 @@ class Movie
       else
         NewMovie.new(*movie)
     end
-  end
-
-  def load_collection(collection)
-    @collection = collection
   end
 
   def has_genre?(search_genre)

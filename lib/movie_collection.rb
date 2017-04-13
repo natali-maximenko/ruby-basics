@@ -4,7 +4,7 @@ require 'date'
 
 class MovieCollection
   attr_accessor :collection
-  TIMEFORMAT = '%I:%M%p'
+  TIMEFORMAT = '%I:%M'
 
   def initialize(filename)
     unless File.exists?(filename)
@@ -41,6 +41,6 @@ class MovieCollection
   def show(movie)
     start_time = Time.now
     end_time = start_time + 60 * movie.length.to_i
-    puts "Now showing %s (%s-%s)" % [movie.title, start_time.strftime(TIMEFORMAT), end_time.strftime(TIMEFORMAT)]
+    puts "Now showing: %s %s - %s" % [movie.title, start_time.strftime(TIMEFORMAT), end_time.strftime(TIMEFORMAT)]
   end
 end
