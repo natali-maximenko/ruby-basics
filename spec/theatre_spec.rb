@@ -1,4 +1,6 @@
 require 'rspec'
+require 'date'
+require 'timecop'
 require_relative '../lib/theatre'
 
 describe Theatre do
@@ -14,7 +16,12 @@ describe Theatre do
 
     context 'show film by period' do
       let(:period) { :morning }
-      it { expect { subject }.to output("Now showing: Casablanca 09:18 - 11:00\n").to_stdout }
+      before do
+        date = Date.today
+        time = Time.local(date.year, date.month, date.day, 12, 0, 0)
+        Timecop.freeze(time)
+      end
+      it { expect { subject }.to output("Now showing: Casablanca 12:00 - 13:42\n").to_stdout }
     end
   end
 

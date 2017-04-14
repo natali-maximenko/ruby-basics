@@ -44,15 +44,13 @@ describe AncientMovie do
   its(:to_s) { is_expected.to eq('Sunset Blvd. - old movie (1950 year)') }
 end
 
-#describe ClassicMovie do
-#  let(:collection) { instance_double(MovieCollection) }
-#  let(:info) { ['http://imdb.com/title/tt0053291/?ref_=chttp_tt_111','Some Like It Hot','1959','USA','1959-03-29','Comedy','120 min','8.3','Billy Wilder','Marilyn Monroe,Tony Curtis,Jack Lemmon', collection] }
-#  let(:movie) { ClassicMovie.new(*info) }
-#  it 'return movie description' do
-#    expect(collection).to receive(:filter).with({director: 'Billy Wilder'})
-#    expect(movie.to_s).to eq('Some Like It Hot - classic movie, director Billy Wilder (5 movies in top-250)')
-#  end
-#end
+describe ClassicMovie do
+  let(:collection) { instance_double(MovieCollection) }
+  subject { ClassicMovie.new('http://imdb.com/title/tt0053291/?ref_=chttp_tt_111','Some Like It Hot','1959','USA','1959-03-29','Comedy','120 min','8.3','Billy Wilder','Marilyn Monroe,Tony Curtis,Jack Lemmon', collection) }
+  before { expect(collection).to receive(:filter).with(director: 'Billy Wilder').and_return(double(size: 5)) }
+
+  its(:to_s) { is_expected.to eq('Some Like It Hot - classic movie, director Billy Wilder (5 movies in top-250)') }
+end
 
 describe ModernMovie do
   subject { ModernMovie.load_from_csv('http://imdb.com/title/tt0169547/?ref_=chttp_tt_63|American Beauty|1999|USA|1999-10-01|Drama,Romance|122 min|8.4|Sam Mendes|Kevin Spacey,Annette Bening,Thora Birch') }

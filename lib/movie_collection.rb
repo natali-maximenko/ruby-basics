@@ -4,7 +4,7 @@ require 'date'
 
 class MovieCollection
   attr_accessor :collection
-  TIMEFORMAT = '%I:%M'
+  TIMEFORMAT = '%H:%M'
 
   def initialize(filename)
     unless File.exists?(filename)
