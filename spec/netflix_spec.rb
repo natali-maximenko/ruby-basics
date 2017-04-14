@@ -1,4 +1,6 @@
 require 'rspec'
+require 'date'
+require 'timecop'
 require_relative '../lib/netflix'
 
 describe Netflix do
@@ -36,11 +38,12 @@ describe Netflix do
 
       context 'when enough' do
         let(:amount) { 5 }
-        let(:movie_title) { "Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb" }
-        let(:movie_length) { 95 }
-        it 'shows selected film' do
-          expect { subject }.to output("Now showing: Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb 08:45 - 10:20\n").to_stdout
+        before do
+          date = Date.today
+          time = Time.local(date.year, date.month, date.day, 10, 0, 0)
+          Timecop.freeze(time)
         end
+        it { expect { subject }.to output("Now showing: Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb 10:00 - 11:35\n").to_stdout }
       end
     end
 
