@@ -1,14 +1,22 @@
 require_relative 'movie_collection'
+require 'date'
 
 class Theatre < MovieCollection
+  PERIODS = {
+      morning: 8..11,
+      day: 12..17,
+      evening: 17..23
+  }
   DAYTIME = {
       morning: {period: :ancient},
       day: {genre: ['Comedy', 'Adventure']},
       evening: {genre: ['Drama', 'Horror']}
   }
 
-  def show(daytime)
-    raise ArgumentError, "Daytime #{daytime} is not valid" unless DAYTIME.key?(daytime)
+  def show(time)
+    hour = DateTime.parse(time).hour
+    daytime = PERIODS.keys.detect { |period| PERIODS[period] === hour }
+    raise ArgumentError, "No movies in this time" if daytime.nil?
     movie = filter(DAYTIME[daytime]).first
     super(movie)
   end
@@ -20,7 +28,7 @@ class Theatre < MovieCollection
       DAYTIME[time].any? {|key, value| movie.match?(key, value)}
     }
     raise ArgumentError, "You can't view movie '#{movie_title}'" if movietime.nil?
-    movietime
+    "From #{PERIODS[movietime].first}:00 to #{PERIODS[movietime].last}:00"
   end
 
 end

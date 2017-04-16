@@ -10,12 +10,12 @@ describe Theatre do
     subject { theatre.show(period) }
 
     context 'when not existed period' do
-      let(:period) { :night }
-      it { expect { subject }.to raise_error ArgumentError, 'Daytime night is not valid' }
+      let(:period) { '1:30' }
+      it { expect { subject }.to raise_error ArgumentError, 'No movies in this time' }
     end
 
     context 'show film by period' do
-      let(:period) { :morning }
+      let(:period) { '10:05' }
       before do
         date = Date.today
         time = Time.local(date.year, date.month, date.day, 12, 0, 0)
@@ -42,7 +42,7 @@ describe Theatre do
 
     context 'when film is shown' do
       let(:movie_title) { 'American History X' }
-      it { is_expected.to eq(:evening) }
+      it { is_expected.to eq('From 17:00 to 23:00') }
     end
   end
 end
