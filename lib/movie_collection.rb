@@ -1,9 +1,10 @@
-require './movie.rb'
+require_relative 'movie'
 require 'csv'
 require 'date'
 
 class MovieCollection
   attr_accessor :collection
+  TIMEFORMAT = '%H:%M'
 
   def initialize(filename)
     unless File.exists?(filename)
@@ -11,16 +12,7 @@ class MovieCollection
     end
 
     @collection = CSV.read(filename, col_sep: '|').map do |movie|
-      case movie[2].to_i
-        when 1900..1944
-          AncientMovie.load_from_array(movie)
-        when 1945..1967
-          ClassicMovie.load_from_array(movie)
-        when 1968..1999
-          ModernMovie.load_from_array(movie)
-        else
-          NewMovie.load_from_array(movie)
-      end
+      Movie.create(movie, self)
     end
   end
 
@@ -44,5 +36,15 @@ class MovieCollection
                .sort
                .group_by { |v| v }
                .map { |v, values| {v => values.count} }
+  end
+
+  def show(movie)
+    start_time = Time.now
+    end_time = start_time + 60 * movie.length.to_i
+    "Now showing: %s %s - %s" % [movie.title, start_time.strftime(TIMEFORMAT), end_time.strftime(TIMEFORMAT)]
+  end
+
+  def most_popular_movie(collection)
+    collection.sort_by { |movie| movie.rating * rand(0.0 .. 1.5) }.last
   end
 end
