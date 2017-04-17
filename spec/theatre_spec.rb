@@ -15,13 +15,20 @@ describe Theatre do
     end
 
     context 'show film by period' do
-      let(:time) { '10:05' }
+      let(:time) { '18:05' }
       before do
         date = Date.today
-        time = Time.local(date.year, date.month, date.day, 12, 0, 0)
+        time = Time.local(date.year, date.month, date.day, 18, 0, 0)
         Timecop.freeze(time)
       end
-      it { is_expected.to match(/Now showing: Modern Times|City Lights|Double Indemnity|Casablanca 12:00 - \d:\d\n/) }
+
+      it "filter, get most popular" do
+        films = double
+        allow(theatre).to receive(:filter).with({genre: ['Drama', 'Horror']}) { films }
+        expect(theatre).to receive(:most_popular_movie).with(films).and_return(double(length: 120, title: 'Modern Times'))
+
+        theatre.show(time)
+      end
     end
   end
 
