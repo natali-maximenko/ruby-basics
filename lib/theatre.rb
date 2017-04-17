@@ -17,7 +17,7 @@ class Theatre < MovieCollection
     hour = DateTime.parse(time).hour
     daytime = PERIODS.keys.detect { |period| PERIODS[period] === hour }
     raise ArgumentError, "No movies in this time" if daytime.nil?
-    movie = filter(DAYTIME[daytime]).first
+    movie = most_popular_movie(filter(DAYTIME[daytime]))
     super(movie)
   end
 

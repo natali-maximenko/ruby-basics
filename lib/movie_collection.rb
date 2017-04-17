@@ -43,4 +43,10 @@ class MovieCollection
     end_time = start_time + 60 * movie.length.to_i
     puts "Now showing: %s %s - %s" % [movie.title, start_time.strftime(TIMEFORMAT), end_time.strftime(TIMEFORMAT)]
   end
+
+  def most_popular_movie(collection)
+    sorted = collection.sort_by { |movie| movie.rating * rand(0.0 .. 1.5) }
+    #p sorted
+    sorted.last
+  end
 end

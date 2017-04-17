@@ -10,7 +10,7 @@ class Netflix < MovieCollection
   end
 
   def show(**attrs_hash)
-    film = filter(attrs_hash).first
+    film = most_popular_movie(filter(attrs_hash))
     take_payment(film)
     super(film)
   end
