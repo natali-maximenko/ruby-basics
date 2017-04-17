@@ -7,21 +7,21 @@ describe Theatre do
   let(:theatre) { Theatre.new('movies.txt') }
 
   describe '#show' do
-    subject { theatre.show(period) }
+    subject { theatre.show(time) }
 
     context 'when not existed period' do
-      let(:period) { '1:30' }
+      let(:time) { '1:30' }
       it { expect { subject }.to raise_error ArgumentError, 'No movies in this time' }
     end
 
     context 'show film by period' do
-      let(:period) { '10:05' }
+      let(:time) { '10:05' }
       before do
         date = Date.today
         time = Time.local(date.year, date.month, date.day, 12, 0, 0)
         Timecop.freeze(time)
       end
-      it { expect { subject }.to output("Now showing: Casablanca 12:00 - 13:42\n").to_stdout }
+      it { is_expected.to match(/Now showing: Modern Times|City Lights|Double Indemnity|Casablanca 12:00 - \d:\d\n/) }
     end
   end
 

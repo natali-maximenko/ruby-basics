@@ -43,7 +43,7 @@ describe Netflix do
           time = Time.local(date.year, date.month, date.day, 10, 0, 0)
           Timecop.freeze(time)
         end
-        it { expect { subject }.to output("Now showing: Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb 10:00 - 11:35\n").to_stdout }
+        it { is_expected.to match(/Now showing: Some Like It Hot|The Graduate|The Apartment|Singin' in the Rain 10:00 - \d:\d\n/) }
       end
     end
 
