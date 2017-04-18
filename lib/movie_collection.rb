@@ -3,6 +3,7 @@ require 'csv'
 require 'date'
 
 class MovieCollection
+  include Enumerable
   attr_accessor :collection
   TIMEFORMAT = '%H:%M'
 
@@ -14,6 +15,10 @@ class MovieCollection
     @collection = CSV.read(filename, col_sep: '|').map do |movie|
       Movie.create(movie, self)
     end
+  end
+
+  def each
+    @collection.each {|movie| yield movie }
   end
 
   def all
