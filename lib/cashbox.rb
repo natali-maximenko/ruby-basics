@@ -11,23 +11,3 @@ module Cashbox
       @account = 0
     end
 end
-
-module TheatreCashbox
-  PRICES = {morning: 3, day: 5, evening: 10}
-  PERIODS = {
-      morning: 8..11,
-      day: 12..17,
-      evening: 17..23
-  }
-
-  def get_price
-    hour = DateTime.now.hour
-    daytime = PERIODS.keys.detect { |period| PERIODS[period] === hour }
-    PRICES.fetch(daytime)
-  end
-
-  def buy_ticket(movie)
-    @account += get_price
-    puts "You bought a ticket for #{movie.title}"
-  end
-end

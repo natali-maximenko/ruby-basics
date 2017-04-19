@@ -4,13 +4,18 @@ require 'date'
 
 class Theatre < MovieCollection
   include Cashbox
-  include TheatreCashbox
+  attr_reader :account
   DAYTIME = {
       morning: {period: :ancient},
       day: {genre: ['Comedy', 'Adventure']},
       evening: {genre: ['Drama', 'Horror']}
   }
-  attr_reader :account
+  PRICES = {morning: 3, day: 5, evening: 10}
+  PERIODS = {
+      morning: 8..11,
+      day: 12..17,
+      evening: 17..23
+  }
 
   def initialize(filename)
     super
@@ -18,10 +23,10 @@ class Theatre < MovieCollection
   end
 
   def show(time)
-    hour = DateTime.parse(time).hour
-    daytime = PERIODS.keys.detect { |period| PERIODS[period] === hour }
+    daytime = get_daytime(DateTime.parse(time))
     raise ArgumentError, "No movies in this time" if daytime.nil?
     movie = most_popular_movie(filter(DAYTIME[daytime]))
+    buy_ticket(movie)
     super(movie)
   end
 
@@ -33,6 +38,21 @@ class Theatre < MovieCollection
     }
     raise ArgumentError, "You can't view movie '#{movie_title}'" if movietime.nil?
     "From #{PERIODS[movietime].first}:00 to #{PERIODS[movietime].last}:00"
+  end
+
+  def get_daytime(date)
+    hour = date.hour
+    PERIODS.keys.detect { |period| PERIODS[period] === hour }
+  end
+
+  def get_price
+    daytime = get_daytime(DateTime.now)
+    PRICES.fetch(daytime)
+  end
+
+  def buy_ticket(movie)
+    @account += get_price
+    puts "You bought a ticket for #{movie.title}"
   end
 
 end

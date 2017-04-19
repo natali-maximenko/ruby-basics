@@ -19,7 +19,6 @@ puts
 theatre = Theatre.new(filename)
 select_movies = theatre.select {|movie| movie.director == 'Billy Wilder' }
 #p select_movies
-theatre.buy_ticket(select_movies.first)
 p theatre.cash
 theatre.show('13:30')
 theatre.take('Bank')
