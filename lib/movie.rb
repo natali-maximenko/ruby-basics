@@ -72,10 +72,6 @@ class Movie
     @year.to_i
   end
 
-  def movie_type
-    self.class.name
-  end
-
   def inspect
     "<#{self.class.name} title: '#{@title}', year: #{@year}, country: #{@country}, date: #{@date}, genre: '#{@genre}', length: #{@length}, rating: #{@rating}, director: '#{@director}', actors: '#{@actors}'>\n"
   end

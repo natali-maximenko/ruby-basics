@@ -12,13 +12,6 @@ module Cashbox
     end
 end
 
-module NetflixCashbox
-    def pay(amount)
-      raise ArgumentError, "Amount should be positive, #{amount} passed" if amount < 0
-      @account += amount
-    end
-end
-
 module TheatreCashbox
   PRICES = {morning: 3, day: 5, evening: 10}
   PERIODS = {

@@ -12,9 +12,9 @@ describe MovieCollection do
   end
 
   describe '#map' do
-    subject(:movies) { collection.map { |movie| movie.movie_type } }
-    it { expect(movies.first).to eq('ModernMovie') }
-    it { expect(movies.last).to eq('NewMovie') }
+    subject(:movies) { collection.map(&:class) }
+    it { expect(movies.first).to eq(ModernMovie) }
+    it { expect(movies.last).to eq(NewMovie) }
   end
 
   describe '#reject' do

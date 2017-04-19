@@ -9,9 +9,10 @@ filtered = movies.sort_by(:year).first(10)
 #puts filtered
 puts
 netflix = Netflix.new(filename)
-netflix.pay(10)
-p netflix.cash
-#netflix.show(genre: 'Drama', period: :modern)
+Netflix.pay(10)
+p Netflix.cash
+netflix.show(genre: 'Drama', period: :modern)
+p Netflix.cash
 p netflix.how_much?('The Terminator')
 #p netflix.how_much?('Sex and the city')
 puts
