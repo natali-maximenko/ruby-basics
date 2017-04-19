@@ -1,6 +1,9 @@
 require_relative 'movie_collection'
+require_relative 'cashbox'
 
 class Netflix < MovieCollection
+  include Cashbox
+  include NetflixCashbox
   attr_reader :account
   PRICES = {ancient: 1, classic: 1.5, modern: 3, new: 5}
 
@@ -13,11 +16,6 @@ class Netflix < MovieCollection
     film = most_popular_movie(filter(attrs_hash))
     take_payment(film)
     super(film)
-  end
-
-  def pay(amount)
-    raise ArgumentError, "Amount should be positive, #{amount} passed" if amount < 0
-    @account += amount
   end
 
   def get_price(period)

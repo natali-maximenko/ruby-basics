@@ -1,17 +1,21 @@
 require_relative 'movie_collection'
+require_relative 'cashbox'
 require 'date'
 
 class Theatre < MovieCollection
-  PERIODS = {
-      morning: 8..11,
-      day: 12..17,
-      evening: 17..23
-  }
+  include Cashbox
+  include TheatreCashbox
   DAYTIME = {
       morning: {period: :ancient},
       day: {genre: ['Comedy', 'Adventure']},
       evening: {genre: ['Drama', 'Horror']}
   }
+  attr_reader :account
+
+  def initialize(filename)
+    super
+    @account = 0
+  end
 
   def show(time)
     hour = DateTime.parse(time).hour
