@@ -72,8 +72,8 @@ class Movie
     @year.to_i
   end
 
-  def classname
-    self.class.name.to_s
+  def movie_type
+    self.class.name
   end
 
   def inspect

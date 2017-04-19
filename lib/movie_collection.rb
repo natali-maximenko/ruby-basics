@@ -17,8 +17,8 @@ class MovieCollection
     end
   end
 
-  def each
-    @collection.each {|movie| yield movie }
+  def each(&block)
+    @collection.each(&block)
   end
 
   def all
