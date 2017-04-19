@@ -72,6 +72,10 @@ class Movie
     @year.to_i
   end
 
+  def classname
+    self.class.name.to_s
+  end
+
   def inspect
     "<#{self.class.name} title: '#{@title}', year: #{@year}, country: #{@country}, date: #{@date}, genre: '#{@genre}', length: #{@length}, rating: #{@rating}, director: '#{@director}', actors: '#{@actors}'>\n"
   end

@@ -5,8 +5,9 @@ require_relative '../lib/theatre'
 filename = ARGV[0] || 'movies.txt'
 
 movies = MovieCollection.new(filename)
-filtered = movies.filter(director: 'Billy Wilder')
+filtered = movies.sort_by(:year).first(10)
 puts filtered
+exit()
 puts
 netflix = Netflix.new(filename)
 netflix.pay(10)

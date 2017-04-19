@@ -26,8 +26,7 @@ class MovieCollection
   end
 
   def sort_by(field)
-    @collection.map
-               .sort_by { |movie| movie.send(field)  }
+    @collection.sort_by(&field)
   end
 
   def filter(**attrs_hash)
