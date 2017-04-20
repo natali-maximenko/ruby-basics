@@ -9,7 +9,7 @@ filtered = movies.sort_by(:year).first(10)
 #puts filtered
 puts
 netflix = Netflix.new(filename)
-Netflix.pay(10)
+netflix.pay(10)
 p Netflix.cash
 netflix.show(genre: 'Drama', period: :modern)
 p Netflix.cash
@@ -21,6 +21,7 @@ select_movies = theatre.select {|movie| movie.director == 'Billy Wilder' }
 #p select_movies
 p theatre.cash
 theatre.show('13:30')
+p theatre.cash
 theatre.take('Bank')
 #p theatre.when?('Once Upon a Time in the West')
 p theatre.when?('American History X')

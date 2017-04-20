@@ -4,7 +4,6 @@ require 'date'
 
 class Theatre < MovieCollection
   include Cashbox
-  attr_reader :account
   DAYTIME = {
       morning: {period: :ancient},
       day: {genre: ['Comedy', 'Adventure']},
@@ -19,7 +18,6 @@ class Theatre < MovieCollection
 
   def initialize(filename)
     super
-    @account = 0
   end
 
   def show(time)
@@ -51,7 +49,7 @@ class Theatre < MovieCollection
   end
 
   def buy_ticket(movie)
-    @account += get_price
+    put_money(get_price)
     puts "You bought a ticket for #{movie.title}"
   end
 
