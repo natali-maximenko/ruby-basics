@@ -1,6 +1,7 @@
 require_relative 'movie_collection'
 require_relative 'cashbox'
 require 'date'
+require 'money'
 
 class Theatre < MovieCollection
   include Cashbox
@@ -9,16 +10,16 @@ class Theatre < MovieCollection
       day: {genre: ['Comedy', 'Adventure']},
       evening: {genre: ['Drama', 'Horror']}
   }
-  PRICES = {morning: 3, day: 5, evening: 10}
+  PRICES = {
+    morning: Money.new(300, "USD"),
+    day: Money.new(500, "USD"),
+    evening: Money.new(1000, "USD")
+  }
   PERIODS = {
       morning: 8..11,
       day: 12..17,
       evening: 17..23
   }
-
-  def initialize(filename)
-    super
-  end
 
   def show(time)
     daytime = get_daytime(DateTime.parse(time))

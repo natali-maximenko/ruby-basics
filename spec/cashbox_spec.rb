@@ -1,11 +1,12 @@
 require 'rspec'
+require 'money'
 require_relative '../lib/cashbox'
 
 describe Cashbox do
   let(:cashbox) { Object.new.extend Cashbox }
 
   describe '#cash' do
-    it { expect(cashbox.cash).to eq(0)}
+    it { expect(cashbox.cash).to eq(Money.new(0, "USD"))}
   end
 
   describe '#put_money' do
@@ -14,23 +15,24 @@ describe Cashbox do
     end
 
      it 'updates cash' do
-      expect { cashbox.put_money(20) }.to change(cashbox, :cash).from(0).to(20)
+      expect { cashbox.put_money(Money.new(2000, "USD")) }.to change(cashbox, :cash).from(Money.new(0, "USD")).to(Money.new(2000, "USD"))
     end
   end
 
   describe '#take' do
-    before { cashbox.put_money(10) }
+    before { cashbox.put_money(Money.new(1000, "USD")) }
+    subject { cashbox.take(taker) }
 
     context 'bank' do
-      subject {cashbox.take('Bank') }
-      it { expect{ subject }.to change(cashbox, :cash).from(10).to(0) }
+      let(:taker) { 'Bank' }
+      it { expect{ subject }.to change(cashbox, :cash).from(Money.new(1000, "USD")).to(Money.new(0, "USD")) }
       it { expect{ subject }.to  output("Encashment was carried out\n").to_stdout}
     end
 
     context 'gansta' do
-       subject {cashbox.take('gansta') }
+       let(:taker) { 'gangsta' }
        it { expect{ subject }.to  raise_error ArgumentError, 'We call the police!'}
-       it { expect(cashbox.cash).to eq(10) }
+       #it { expect{ subject }.not_to change(cashbox, :cash) }
     end
 
   end

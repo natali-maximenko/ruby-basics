@@ -10,21 +10,22 @@ filtered = movies.sort_by(:year).first(10)
 puts
 netflix = Netflix.new(filename)
 netflix.pay(10)
-p Netflix.cash
+puts Netflix.cash
 netflix.show(genre: 'Drama', period: :modern)
-p Netflix.cash
-p netflix.how_much?('The Terminator')
+puts Netflix.cash
+puts netflix.how_much?('The Terminator')
 #p netflix.how_much?('Sex and the city')
 puts
 theatre = Theatre.new(filename)
 select_movies = theatre.select {|movie| movie.director == 'Billy Wilder' }
 #p select_movies
-p theatre.cash
+puts theatre.cash
 theatre.show('13:30')
-p theatre.cash
+puts theatre.cash
 theatre.take('Bank')
+puts theatre.cash
 #p theatre.when?('Once Upon a Time in the West')
-p theatre.when?('American History X')
+puts theatre.when?('American History X')
 #theatre.show('3:30')
 
 
