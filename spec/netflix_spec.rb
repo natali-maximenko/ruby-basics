@@ -1,18 +1,19 @@
 require 'rspec'
 require 'date'
 require 'timecop'
+require 'money'
 require_relative '../lib/netflix'
 
-describe Netflix do
-  let(:netflix) { Netflix.new('movies.txt') }
+describe Cinema::Netflix do
+  let(:netflix) { Cinema::Netflix.new('movies.txt') }
 
   describe '#pay' do
-    it 'updates account' do
-      expect { netflix.pay(25) }.to change(netflix, :account).from(0).to(25)
+    it 'updates balance' do
+      expect { netflix.pay(25) }.to change(netflix, :user_balance).from(Money.new(0, "USD")).to(Money.new(2500, "USD"))
     end
 
     it 'fails on negative amounts' do
-      expect { netflix.pay(-5) }.to raise_error ArgumentError, 'Amount should be positive, -5 passed'
+      expect { netflix.pay(-5) }.to raise_error ArgumentError, 'Amount should be positive, -500 passed'
     end
   end
 
@@ -22,7 +23,7 @@ describe Netflix do
 
     context 'when no money' do
       it 'fails' do
-        expect { subject }.to raise_error ArgumentError, 'You have no money on your account'
+        expect { subject }.to raise_error ArgumentError, 'You have no money on your balance'
       end
     end
 
@@ -32,7 +33,7 @@ describe Netflix do
       context 'when not enough' do
         let(:amount) { 1 }
         it 'fails' do
-          expect { subject }.to raise_error ArgumentError, 'Need more money. Film cost 1.5, you have 1 on your account'
+          expect { subject }.to raise_error ArgumentError, 'Need more money. Film cost 1.50, you have 1.00 on your balance'
         end
       end
 
@@ -57,7 +58,7 @@ describe Netflix do
       it { expect { subject }.to raise_error ArgumentError, "Movie 'Mortal Combat' not found" }
     end
 
-    Netflix::PRICES.each_pair do |period, price|
+    Cinema::Netflix::PRICES.each_pair do |period, price|
       context "when movie from #{period} period" do
         let(:title) { netflix.filter(period: period).first.title }
         it { is_expected.to eq price }
