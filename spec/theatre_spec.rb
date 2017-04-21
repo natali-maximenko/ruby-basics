@@ -3,8 +3,8 @@ require 'date'
 require 'timecop'
 require_relative '../lib/theatre'
 
-describe Theatre do
-  let(:theatre) { Theatre.new('movies.txt') }
+describe Cinema::Theatre do
+  let(:theatre) { Cinema::Theatre.new('movies.txt') }
 
   describe '#show' do
     subject { theatre.show(time) }

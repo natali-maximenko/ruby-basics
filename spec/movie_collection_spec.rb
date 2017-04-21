@@ -2,8 +2,8 @@ require 'rspec'
 require 'rspec/its'
 require_relative '../lib/movie_collection'
 
-describe MovieCollection do
-  let(:collection) { MovieCollection.new('movies.txt') }
+describe Cinema::MovieCollection do
+  let(:collection) { Cinema::MovieCollection.new('movies.txt') }
 
   describe '#select' do
     subject { collection.select { |movie| movie.year == 2015 } }
@@ -13,8 +13,8 @@ describe MovieCollection do
 
   describe '#map' do
     subject(:movies) { collection.map(&:class) }
-    it { expect(movies.first).to eq(ModernMovie) }
-    it { expect(movies.last).to eq(NewMovie) }
+    it { expect(movies.first).to eq(Cinema::ModernMovie) }
+    it { expect(movies.last).to eq(Cinema::NewMovie) }
   end
 
   describe '#reject' do

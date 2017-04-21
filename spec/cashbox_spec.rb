@@ -2,8 +2,8 @@ require 'rspec'
 require 'money'
 require_relative '../lib/cashbox'
 
-describe Cashbox do
-  let(:cashbox) { Object.new.extend Cashbox }
+describe Cinema::Cashbox do
+  let(:cashbox) { Object.new.extend Cinema::Cashbox }
 
   describe '#cash' do
     it { expect(cashbox.cash).to eq(Money.new(0, "USD"))}

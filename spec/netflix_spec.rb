@@ -4,8 +4,8 @@ require 'timecop'
 require 'money'
 require_relative '../lib/netflix'
 
-describe Netflix do
-  let(:netflix) { Netflix.new('movies.txt') }
+describe Cinema::Netflix do
+  let(:netflix) { Cinema::Netflix.new('movies.txt') }
 
   describe '#pay' do
     it 'updates balance' do
@@ -58,7 +58,7 @@ describe Netflix do
       it { expect { subject }.to raise_error ArgumentError, "Movie 'Mortal Combat' not found" }
     end
 
-    Netflix::PRICES.each_pair do |period, price|
+    Cinema::Netflix::PRICES.each_pair do |period, price|
       context "when movie from #{period} period" do
         let(:title) { netflix.filter(period: period).first.title }
         it { is_expected.to eq price }

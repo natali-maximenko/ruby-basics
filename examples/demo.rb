@@ -4,19 +4,19 @@ require_relative '../lib/theatre'
 
 filename = ARGV[0] || 'movies.txt'
 
-movies = MovieCollection.new(filename)
+movies = Cinema::MovieCollection.new(filename)
 filtered = movies.sort_by(:year).first(10)
 #puts filtered
 puts
-netflix = Netflix.new(filename)
+netflix = Cinema::Netflix.new(filename)
 netflix.pay(10)
-puts Netflix.cash
+puts Cinema::Netflix.cash
 netflix.show(genre: 'Drama', period: :modern)
-puts Netflix.cash
+puts Cinema::Netflix.cash
 puts netflix.how_much?('The Terminator')
 #p netflix.how_much?('Sex and the city')
 puts
-theatre = Theatre.new(filename)
+theatre = Cinema::Theatre.new(filename)
 select_movies = theatre.select {|movie| movie.director == 'Billy Wilder' }
 #p select_movies
 puts theatre.cash
