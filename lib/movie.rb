@@ -1,6 +1,7 @@
 require 'date'
 
 module Cinema
+  # Movie
   class Movie
     attr_accessor :link, :title, :year, :country, :date, :genre,
                   :length, :rating, :director, :actors, :collection
@@ -31,16 +32,18 @@ module Cinema
     def self.create(movie, collection = nil)
       movie.push(collection)
       year = movie[2]
-      raise ArgumentError, "#{year} is not valid year" if /\D/.match(year) || year.to_i < 1900
+      if /\D/.match(year) || year.to_i < 1900
+        raise ArgumentError, "#{year} is not valid year"
+      end
       case year.to_i
-        when 1900..1944
-          AncientMovie.new(*movie)
-        when 1945..1967
-          ClassicMovie.new(*movie)
-        when 1968..1999
-          ModernMovie.new(*movie)
-        else
-          NewMovie.new(*movie)
+      when 1900..1944
+        AncientMovie.new(*movie)
+      when 1945..1967
+        ClassicMovie.new(*movie)
+      when 1968..1999
+        ModernMovie.new(*movie)
+      else
+        NewMovie.new(*movie)
       end
     end
 
@@ -49,10 +52,10 @@ module Cinema
     end
 
     def match?(key, value)
-      field = self.send(key)
+      field = send(key)
       if field.instance_of?(Array)
         if value.instance_of?(Array)
-          value.any? {|v| field.include?(v) }
+          value.any? { |v| field.include?(v) }
         else
           field.grep(value).any?
         end
@@ -82,6 +85,7 @@ module Cinema
     end
   end
 
+  # AncientMovie
   class AncientMovie < Movie
     def period
       :ancient
@@ -92,18 +96,22 @@ module Cinema
     end
   end
 
+  # ClassicMovie
   class ClassicMovie < Movie
     def period
       :classic
     end
 
     def to_s
-      raise ArgumentError, "Have no info about movies collection" if @collection.nil?
+      if @collection.nil?
+        raise ArgumentError, 'Have no info about movies collection'
+      end
       movies = @collection.filter(director: @director).count
       "#{@title} - classic movie, director #{@director} (#{movies} movies in top-250)"
     end
   end
 
+  # ModernMovie
   class ModernMovie < Movie
     def period
       :modern
@@ -114,6 +122,7 @@ module Cinema
     end
   end
 
+  # NewMovie
   class NewMovie < Movie
     def period
       :new
