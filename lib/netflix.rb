@@ -24,8 +24,13 @@ module Cinema
       @user_balance += Money.new(amount_cents, 'USD')
     end
 
-    def show(**attrs_hash)
-      film = most_popular_movie(filter(attrs_hash))
+    def show(attrs_hash = {})
+      if block_given?
+        movies = @collection.select { |movie| yield movie }
+        film = most_popular_movie(movies)
+      else
+        film = most_popular_movie(filter(attrs_hash))
+      end
       take_payment(film)
       super(film)
     end
