@@ -3,11 +3,11 @@ require 'csv'
 require 'date'
 
 module Cinema
-  # MovieCollection
   class MovieCollection
     include Enumerable
     attr_accessor :collection
-    TIMEFORMAT = '%H:%M'
+    TIMEFORMAT = '%H:%M'.freeze
+    SHOW_MSG = 'Now showing: %s %s - %s'.freeze
 
     def initialize(filename)
       unless File.exist?(filename)
@@ -47,10 +47,7 @@ module Cinema
     def show(movie)
       start_time = Time.now
       end_time = start_time + 60 * movie.length.to_i
-      pattern = "Now showing: %s %s - %s"
-      start_time_str = start_time.strftime(TIMEFORMAT)
-      end_time_str = end_time.strftime(TIMEFORMAT)
-      puts pattern % [movie.title, start_time_str, end_time_str]
+      puts SHOW_MSG % [movie.title, start_time.strftime(TIMEFORMAT), end_time.strftime(TIMEFORMAT)]
     end
 
     def most_popular_movie(collection)

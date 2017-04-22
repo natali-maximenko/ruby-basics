@@ -1,6 +1,5 @@
 require 'money'
 module Cinema
-  # Cashbox module
   module Cashbox
     I18n.enforce_available_locales = false
 
@@ -9,9 +8,7 @@ module Cinema
     end
 
     def put_money(amount)
-      if amount < 0
-        raise ArgumentError, "Amount should be positive, #{amount} passed"
-      end
+      raise ArgumentError, "Amount should be positive, #{amount} passed" if amount < 0
       @money = cash + Money.new(amount, 'USD')
     end
 

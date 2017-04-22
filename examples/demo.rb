@@ -11,7 +11,8 @@ puts
 netflix = Cinema::Netflix.new(filename)
 netflix.pay(10)
 puts Cinema::Netflix.cash
-netflix.show(genre: 'Drama', period: :modern)
+#netflix.show(genre: 'Drama', period: :modern)
+netflix.show { |movie| !movie.title.include?('Terminator') && movie.genre.include?('Action') && movie.year > 2003}
 puts Cinema::Netflix.cash
 puts netflix.how_much?('The Terminator')
 #p netflix.how_much?('Sex and the city')

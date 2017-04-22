@@ -3,7 +3,6 @@ require_relative 'cashbox'
 require 'money'
 
 module Cinema
-  # Netflix
   class Netflix < MovieCollection
     extend Cashbox
     attr_reader :user_balance
@@ -12,7 +11,7 @@ module Cinema
       classic: Money.new(150, 'USD'),
       modern: Money.new(300, 'USD'),
       new: Money.new(500, 'USD')
-    }
+    }.freeze
 
     def initialize(filename)
       super

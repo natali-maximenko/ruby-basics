@@ -1,7 +1,6 @@
 require 'date'
 
 module Cinema
-  # Movie
   class Movie
     attr_accessor :link, :title, :year, :country, :date, :genre,
                   :length, :rating, :director, :actors, :collection
@@ -47,7 +46,7 @@ module Cinema
       end
     end
 
-    def has_genre?(search_genre)
+    def genre?(search_genre)
       genre.include?(search_genre)
     end
 
@@ -85,7 +84,6 @@ module Cinema
     end
   end
 
-  # AncientMovie
   class AncientMovie < Movie
     def period
       :ancient
@@ -96,7 +94,6 @@ module Cinema
     end
   end
 
-  # ClassicMovie
   class ClassicMovie < Movie
     def period
       :classic
@@ -111,7 +108,6 @@ module Cinema
     end
   end
 
-  # ModernMovie
   class ModernMovie < Movie
     def period
       :modern
@@ -122,7 +118,6 @@ module Cinema
     end
   end
 
-  # NewMovie
   class NewMovie < Movie
     def period
       :new
@@ -130,7 +125,7 @@ module Cinema
 
     def to_s
       years = Date.today.year.to_i - @year.to_i
-      "#{@title} - latest, was released #{years.to_s} years ago!"
+      "#{@title} - latest, was released #{years} years ago!"
     end
   end
 end
