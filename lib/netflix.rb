@@ -5,17 +5,19 @@ require 'money'
 module Cinema
   class Netflix < MovieCollection
     extend Cashbox
-    attr_reader :user_balance
+    attr_reader :user_balance, :user_filters
     PRICES = {
       ancient: Money.new(100, 'USD'),
       classic: Money.new(150, 'USD'),
       modern: Money.new(300, 'USD'),
       new: Money.new(500, 'USD')
     }.freeze
+    MOVIE_ATTRS = [:link, :title, :year, :country, :date, :genre, :length, :rating, :director, :actors]
 
     def initialize(filename)
       super
       @user_balance = Money.new(0, 'USD')
+      @user_filters = {}
     end
 
     def pay(amount)
@@ -24,18 +26,49 @@ module Cinema
       @user_balance += Money.new(amount_cents, 'USD')
     end
 
-    def show(attrs_hash = {})
-      if block_given?
-        movies = @collection.select { |movie| yield movie }
-        film = most_popular_movie(movies)
-      else
-        film = most_popular_movie(filter(attrs_hash))
-      end
+    def show(**filters, &block)
+      movies = block ? @collection.select(&block) : filter(filters)
+      film = most_popular_movie(movies)
       take_payment(film)
       super(film)
     end
 
-    def get_price(period)
+    def define_filter(filter_name, &block)
+      raise ArgumentError, 'Empty filter name' if filter_name.nil?
+      raise ArgumentError, 'Empty block body' if block.nil?
+      @user_filters[filter_name] = block
+    end
+
+    def filter(**filters)
+      selected_user_filters = {}
+      attr_filters = {}
+      filters.each do |name, body|
+        if @user_filters.include?(name)
+          selected_user_filters[name] = @user_filters.fetch(name)
+        elsif MOVIE_ATTRS.include?(name)
+          attr_filters[name] = body
+        else
+          raise ArgumentError, 'invalid filter'
+        end
+      end
+
+      films = []
+      films = super(attr_filters) if attr_filters.count > 0
+      if selected_user_filters.count > 0
+        films = films.empty? ? user_filter(selected_user_filters) : user_filter(selected_user_filters, films)
+      end
+      films
+    end
+
+    def user_filter(filters, collection = nil)
+      collection = @collection if collection.nil?
+      filtered = filters.reduce(collection) do |memo, (key, block)|
+        memo.select(&block)
+      end
+      filtered
+    end
+
+    def price(period)
       PRICES.fetch(period)
     end
 
@@ -44,10 +77,9 @@ module Cinema
         raise ArgumentError, 'You have no money on your balance'
       end
 
-      price = get_price(movie.period)
-      new_balance = @user_balance - price
+      new_balance = @user_balance - price(movie.period)
       if new_balance < 0
-        raise ArgumentError, "Need more money. Film cost #{price}, you have #{@user_balance} on your balance"
+        raise ArgumentError, "Need more money. Film cost #{price(movie.period)}, you have #{@user_balance} on your balance"
       end
       @user_balance = new_balance
     end
@@ -55,7 +87,7 @@ module Cinema
     def how_much?(movie_title)
       movie = filter(title: movie_title).first
       raise ArgumentError, "Movie '#{movie_title}' not found" if movie.nil?
-      get_price(movie.period)
+      price(movie.period)
     end
   end
 end
