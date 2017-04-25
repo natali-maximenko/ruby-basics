@@ -40,29 +40,16 @@ module Cinema
     end
 
     def filter(**filters)
-      selected_user_filters = {}
-      attr_filters = {}
-      filters.each do |name, body|
-        if @user_filters.include?(name)
-          selected_user_filters[name] = @user_filters.fetch(name)
-        elsif MOVIE_ATTRS.include?(name)
-          attr_filters[name] = body
-        else
-          raise ArgumentError, 'invalid filter'
-        end
-      end
+      selected_user_filters, other_filters = filters.partition { |k, v| @user_filters.include?(k) }
+      attr_filters = other_filters.select { |k, v| MOVIE_ATTRS.include?(k) }
 
-      films = []
-      films = super(attr_filters) if attr_filters.count > 0
-      if selected_user_filters.count > 0
-        films = films.empty? ? user_filter(selected_user_filters) : user_filter(selected_user_filters, films)
-      end
-      films
+      films = super(attr_filters.to_h)
+      user_filter(selected_user_filters.to_h, films)
     end
 
-    def user_filter(filters, collection = nil)
-      collection = @collection if collection.nil?
-      filtered = filters.reduce(collection) do |memo, (key, block)|
+    def user_filter(filters, collection = @collection)
+      filtered = filters.reduce(collection) do |memo, (key, value)|
+        block = @user_filters.fetch(key)
         memo.select(&block)
       end
       filtered

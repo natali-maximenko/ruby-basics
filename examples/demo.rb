@@ -1,7 +1,6 @@
 require_relative '../lib/movie_collection'
 require_relative '../lib/netflix'
 require_relative '../lib/theatre'
-require_relative '../lib/movie'
 
 filename = ARGV[0] || 'movies.txt'
 
