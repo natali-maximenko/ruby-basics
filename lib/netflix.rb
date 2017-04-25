@@ -33,10 +33,13 @@ module Cinema
       super(film)
     end
 
-    def define_filter(filter_name, &block)
+    def define_filter(filter_name, from: nil, arg: nil, &block)
       raise ArgumentError, 'Empty filter name' if filter_name.nil?
-      raise ArgumentError, 'Empty block body' if block.nil?
-      @user_filters[filter_name] = block
+      if from.nil? && arg.nil?
+        @user_filters[filter_name] = block
+      else
+        @user_filters[filter_name] = Proc.new { |movie| @user_filters.fetch(from).call(movie, arg) }
+      end
     end
 
     def filter(**filters)
