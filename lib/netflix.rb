@@ -42,9 +42,7 @@ module Cinema
     def filter(**filters)
       selected_user_filters, other_filters = filters.partition { |k, v| @user_filters.include?(k) }
       attr_filters = other_filters.select { |k, v| MOVIE_ATTRS.include?(k) }
-
-      films = super(attr_filters.to_h)
-      user_filter(selected_user_filters.to_h, films)
+      user_filter(selected_user_filters.to_h, super(attr_filters.to_h))
     end
 
     def user_filter(filters, collection = @collection)
