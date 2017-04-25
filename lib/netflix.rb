@@ -48,7 +48,7 @@ module Cinema
 
     def user_filter(filters, collection = @collection)
       filtered = filters.reduce(collection) do |memo, (key, value)|
-        memo.select(&@user_filters.fetch(key))
+        memo.select { |movie| @user_filters.fetch(key).call(movie, value) }
       end
       filtered
     end

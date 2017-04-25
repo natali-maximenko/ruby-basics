@@ -12,11 +12,13 @@ netflix = Cinema::Netflix.new(filename)
 netflix.pay(20)
 puts Cinema::Netflix.cash
 #netflix.show(genre: 'Drama', period: :modern)
-netflix.show { |movie| !movie.title.include?('Terminator') && movie.genre.include?('Action') && movie.year > 2003}
-netflix.define_filter(:new_sci_fi) { |movie| movie.genre.include?('Sci-Fi') && movie.country != 'UK' && movie.period == :new }
-netflix.show(new_sci_fi: true)
-netflix.show(new_sci_fi: true, director: 'Christopher Nolan')
-puts Cinema::Netflix.cash
+#netflix.show { |movie| !movie.title.include?('Terminator') && movie.genre.include?('Action') && movie.year > 2003}
+netflix.define_filter(:sci_fi) { |movie| movie.genre.include?('Sci-Fi') && movie.country != 'UK' }
+netflix.show(sci_fi: true)
+netflix.show(sci_fi: true, director: 'Christopher Nolan')
+netflix.define_filter(:new_sci_fi) { |movie, year| movie.year > year && movie.genre.include?('Sci-Fi') && movie.country != 'UK' }
+netflix.show(new_sci_fi: 2010)
+#puts Cinema::Netflix.cash
 puts netflix.how_much?('The Terminator')
 #p netflix.how_much?('Sex and the city')
 exit()
