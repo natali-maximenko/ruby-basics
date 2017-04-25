@@ -41,14 +41,14 @@ module Cinema
 
     def filter(**filters)
       selected_user_filters, other_filters = filters.partition { |k, v| @user_filters.include?(k) }
+        .map(&:to_h)
       attr_filters = other_filters.select { |k, v| MOVIE_ATTRS.include?(k) }
-      user_filter(selected_user_filters.to_h, super(attr_filters.to_h))
+      user_filter(selected_user_filters, super(attr_filters))
     end
 
     def user_filter(filters, collection = @collection)
       filtered = filters.reduce(collection) do |memo, (key, value)|
-        block = @user_filters.fetch(key)
-        memo.select(&block)
+        memo.select(&@user_filters.fetch(key))
       end
       filtered
     end
