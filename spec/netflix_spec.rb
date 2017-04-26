@@ -106,9 +106,8 @@ describe Cinema::Netflix do
       it do
         subject.each do |movie|
           expect(movie.country).not_to eq 'UK'
-          expect(movie.year).to be > 2010
         end
-        is_expected.to all have_attributes(genre: array_including('Sci-Fi'))
+        is_expected.to all have_attributes(genre: array_including('Sci-Fi'), :year => (a_value > 2010) )
       end
     end
 
@@ -121,9 +120,8 @@ describe Cinema::Netflix do
       it do
         subject.each do |movie|
           expect(movie.country).not_to eq 'UK'
-          expect(movie.genre.to_s).to match(/Sci-Fi/)
-          expect(movie.year).to be > 2014
         end
+        is_expected.to all have_attributes(genre: array_including('Sci-Fi'), :year => (a_value > 2014) )
       end
     end
   end
