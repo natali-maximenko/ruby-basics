@@ -12,7 +12,7 @@ module Cinema
       modern: Money.new(300, 'USD'),
       new: Money.new(500, 'USD')
     }.freeze
-    MOVIE_ATTRS = [:link, :title, :year, :country, :date, :genre, :length, :rating, :director, :actors]
+    MOVIE_ATTRS = [:link, :title, :year, :country, :date, :genre, :length, :rating, :director, :actors, :period]
 
     def initialize(filename)
       super

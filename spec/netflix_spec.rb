@@ -3,6 +3,7 @@ require 'date'
 require 'timecop'
 require 'money'
 require_relative '../lib/netflix'
+require_relative '../lib/movie'
 
 describe Cinema::Netflix do
   let(:netflix) { Cinema::Netflix.new('movies.txt') }
@@ -38,13 +39,15 @@ describe Cinema::Netflix do
       end
 
       context 'when enough' do
-        let(:amount) { 5 }
+        let(:amount) { 15 }
+        let(:filters) { { genre: 'Drama', period: :modern, rating: '8.8' } }
+        subject { netflix.show(filters) }
         before do
           date = Date.today
           time = Time.local(date.year, date.month, date.day, 10, 0, 0)
           Timecop.freeze(time)
         end
-        it { is_expected.to match(/Now showing: Some Like It Hot|The Graduate|The Apartment|Singin' in the Rain 10:00 - \d:\d\n/) }
+        it { expect { subject }.to output("Now showing: Forrest Gump 10:00 - 12:22\n").to_stdout }
       end
     end
 
@@ -65,4 +68,71 @@ describe Cinema::Netflix do
       end
     end
   end
+
+  describe '#filter' do
+    subject { netflix.filter(filters) }
+
+    context 'filter by movie attr' do
+      let(:filters) do { genre: 'Drama', period: :classic, country: 'Japan' } end
+      it do
+        subject.each do |movie|
+          expect(movie).to be_an(Cinema::ClassicMovie)
+          expect(movie.genre.to_s).to match(/Drama/)
+          expect(movie).to have_attributes(country: 'Japan')
+        end
+      end
+    end
+
+    context 'filter by simple new_sci_fi' do
+      before { netflix.define_filter(:new_sci_fi) { |movie| movie.genre.include?('Sci-Fi') && movie.country != 'UK' && movie.period == :new } }
+      let(:filters) do { new_sci_fi: true } end
+      it do
+        subject.each do |movie|
+          expect(movie).to be_an(Cinema::NewMovie)
+          expect(movie.country).not_to eq 'UK'
+          expect(movie.genre.to_s).to match(/Sci-Fi/)
+        end
+      end
+    end
+
+    context 'filter by simple sci_fi and director attr' do
+      before { netflix.define_filter(:sci_fi) { |movie| movie.genre.include?('Sci-Fi') && movie.country != 'UK' } }
+      let(:filters) do { sci_fi: true, director: 'Christopher Nolan' } end
+      it do
+        subject.each do |movie|
+          expect(movie.country).not_to eq 'UK'
+          expect(movie.genre.to_s).to match(/Sci-Fi/)
+          expect(movie).to have_attributes(director: 'Christopher Nolan')
+        end
+      end
+    end
+
+    context 'filter by sci_fi with param' do
+      before { netflix.define_filter(:sci_fi) { |movie, year| movie.year > year && movie.genre.include?('Sci-Fi') && movie.country != 'UK' } }
+      let(:filters) { { sci_fi: 2010 } }
+      it do
+        subject.each do |movie|
+          expect(movie.country).not_to eq 'UK'
+          expect(movie.genre.to_s).to match(/Sci-Fi/)
+          expect(movie.year).to be > 2010
+        end
+      end
+    end
+
+    context 'filter by nested from sci_fi with arg' do
+      before do
+        netflix.define_filter(:sci_fi) { |movie, year| movie.year > year && movie.genre.include?('Sci-Fi') && movie.country != 'UK' }
+        netflix.define_filter(:sci_fi_latest, arg: 2014, from: :sci_fi)
+      end
+      let(:filters) { { sci_fi_latest: true } }
+      it do
+        subject.each do |movie|
+          expect(movie.country).not_to eq 'UK'
+          expect(movie.genre.to_s).to match(/Sci-Fi/)
+          expect(movie.year).to be > 2014
+        end
+      end
+    end
+  end
+
 end
