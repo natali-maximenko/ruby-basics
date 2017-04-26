@@ -3,6 +3,7 @@ require 'date'
 require 'timecop'
 require 'money'
 require_relative '../lib/netflix'
+require_relative '../lib/movie'
 
 describe Cinema::Netflix do
   let(:netflix) { Cinema::Netflix.new('movies.txt') }
@@ -38,13 +39,15 @@ describe Cinema::Netflix do
       end
 
       context 'when enough' do
-        let(:amount) { 5 }
+        let(:amount) { 15 }
+        let(:filters) { { genre: 'Drama', period: :modern, rating: '8.8' } }
+        subject { netflix.show(filters) }
         before do
           date = Date.today
           time = Time.local(date.year, date.month, date.day, 10, 0, 0)
           Timecop.freeze(time)
         end
-        it { is_expected.to match(/Now showing: Some Like It Hot|The Graduate|The Apartment|Singin' in the Rain 10:00 - \d:\d\n/) }
+        it { expect { subject }.to output("Now showing: Forrest Gump 10:00 - 12:22\n").to_stdout }
       end
     end
 
@@ -65,4 +68,54 @@ describe Cinema::Netflix do
       end
     end
   end
+
+  describe '#filter' do
+    subject { netflix.filter(filters) }
+
+    context 'simple filter' do
+      let(:filters) do { genre: 'Drama', period: :classic, country: 'Japan' } end
+      it do
+        is_expected.to all have_attributes(period: :classic, country: 'Japan', genre: array_including('Drama'))
+      end
+    end
+
+    context 'simple custom filter' do
+      before { netflix.define_filter(:new_sci_fi) { |movie| movie.genre.include?('Sci-Fi') && movie.country == 'USA' && movie.period == :new } }
+      let(:filters) do { new_sci_fi: true } end
+      it do
+        is_expected.to all (
+          be_a(Cinema::NewMovie)
+          .and have_attributes(period: :new, genre: array_including('Sci-Fi'), country: 'USA')
+        )
+      end
+    end
+
+    context 'custom filter and some attribute' do
+      before { netflix.define_filter(:sci_fi) { |movie| movie.genre.include?('Sci-Fi') && movie.country == 'USA' } }
+      let(:filters) do { sci_fi: true, director: 'Christopher Nolan' } end
+      it do
+        is_expected.to all have_attributes(country: 'USA', director: 'Christopher Nolan', genre: array_including('Sci-Fi'))
+      end
+    end
+
+    context 'custom filter with parameter' do
+      before { netflix.define_filter(:sci_fi) { |movie, year| movie.year > year && movie.genre.include?('Sci-Fi') && movie.country == 'USA' } }
+      let(:filters) { { sci_fi: 2010 } }
+      it do
+        is_expected.to all have_attributes(country: 'USA', genre: array_including('Sci-Fi'), :year => (a_value > 2010) )
+      end
+    end
+
+    context 'define filter based on other' do
+      before do
+        netflix.define_filter(:sci_fi) { |movie, year| movie.year > year && movie.genre.include?('Sci-Fi') && movie.country == 'USA' }
+        netflix.define_filter(:sci_fi_latest, arg: 2014, from: :sci_fi)
+      end
+      let(:filters) { { sci_fi_latest: true } }
+      it do
+        is_expected.to all have_attributes(country: 'USA', genre: array_including('Sci-Fi'), :year => (a_value > 2014) )
+      end
+    end
+  end
+
 end
