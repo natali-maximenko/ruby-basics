@@ -72,54 +72,47 @@ describe Cinema::Netflix do
   describe '#filter' do
     subject { netflix.filter(filters) }
 
-    context 'filter by movie attr' do
+    context 'simple filter' do
       let(:filters) do { genre: 'Drama', period: :classic, country: 'Japan' } end
       it do
-        subject.each do |movie|
-          expect(movie).to be_an(Cinema::ClassicMovie)
-          expect(movie.genre.to_s).to match(/Drama/)
-          expect(movie).to have_attributes(country: 'Japan')
-        end
+        is_expected.to all have_attributes(period: :classic, country: 'Japan', genre: array_including('Drama'))
       end
     end
 
-    context 'filter by simple new_sci_fi' do
+    context 'simpe custom filter' do
       before { netflix.define_filter(:new_sci_fi) { |movie| movie.genre.include?('Sci-Fi') && movie.country != 'UK' && movie.period == :new } }
       let(:filters) do { new_sci_fi: true } end
       it do
-        subject.each do |movie|
-          expect(movie).to be_an(Cinema::NewMovie)
-          expect(movie.country).not_to eq 'UK'
-          expect(movie.genre.to_s).to match(/Sci-Fi/)
-        end
+        #is_expected.to all match { |m| m.is_a?(Cinema::NewMovie) && m.country != 'UK' && m.genre.include?('Sci-Fi') }
+        is_expected.to all ( be_a(Cinema::NewMovie) )
+        is_expected.to all have_attributes(period: :new, genre: array_including('Sci-Fi'))
       end
     end
 
-    context 'filter by simple sci_fi and director attr' do
+    context 'custom filter and some attribute' do
       before { netflix.define_filter(:sci_fi) { |movie| movie.genre.include?('Sci-Fi') && movie.country != 'UK' } }
       let(:filters) do { sci_fi: true, director: 'Christopher Nolan' } end
       it do
         subject.each do |movie|
           expect(movie.country).not_to eq 'UK'
-          expect(movie.genre.to_s).to match(/Sci-Fi/)
-          expect(movie).to have_attributes(director: 'Christopher Nolan')
         end
+        is_expected.to all have_attributes(director: 'Christopher Nolan', genre: array_including('Sci-Fi'))
       end
     end
 
-    context 'filter by sci_fi with param' do
+    context 'custom filter with parameter' do
       before { netflix.define_filter(:sci_fi) { |movie, year| movie.year > year && movie.genre.include?('Sci-Fi') && movie.country != 'UK' } }
       let(:filters) { { sci_fi: 2010 } }
       it do
         subject.each do |movie|
           expect(movie.country).not_to eq 'UK'
-          expect(movie.genre.to_s).to match(/Sci-Fi/)
           expect(movie.year).to be > 2010
         end
+        is_expected.to all have_attributes(genre: array_including('Sci-Fi'))
       end
     end
 
-    context 'filter by nested from sci_fi with arg' do
+    context 'define filter based on other' do
       before do
         netflix.define_filter(:sci_fi) { |movie, year| movie.year > year && movie.genre.include?('Sci-Fi') && movie.country != 'UK' }
         netflix.define_filter(:sci_fi_latest, arg: 2014, from: :sci_fi)
