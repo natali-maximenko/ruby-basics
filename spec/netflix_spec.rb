@@ -91,10 +91,13 @@ describe Cinema::Netflix do
     end
 
     context 'custom filter and some attribute' do
-      before { netflix.define_filter(:sci_fi) { |movie| movie.genre.include?('Sci-Fi') && movie.country == 'USA' } }
+      before { netflix.define_filter(:sci_fi) { |movie| movie.genre.include?('Sci-Fi') && movie.country != 'UK' } }
       let(:filters) do { sci_fi: true, director: 'Christopher Nolan' } end
       it do
-        is_expected.to all have_attributes(country: 'USA', director: 'Christopher Nolan', genre: array_including('Sci-Fi'))
+        is_expected.to all (
+          satisfy('country is not UK') { |m| m.country != 'UK' }
+          .and have_attributes(director: 'Christopher Nolan', genre: array_including('Sci-Fi'))
+        )
       end
     end
 
