@@ -1,48 +1,40 @@
 require 'date'
+require 'virtus'
+require_relative 'movie_collection'
 
 module Cinema
   class Movie
-    attr_accessor :link, :title, :year, :country, :date, :genre,
-                  :length, :rating, :director, :actors, :collection
-
-    def initialize(link, title, year, country, date, genre, length, rating, director, actors, collection = nil)
-      @link = link
-      @title = title
-      @year = year
-      @country = country
-      @date = date
-      @genre = genre
-      @length = length
-      @rating = rating
-      @director = director
-      @actors = actors
-      @collection = collection
-    end
-
-    def self.load_from_csv(string, pattern = '|')
-      info = string.split(pattern)
-      new(*info)
-    end
-
-    def self.load_from_array(info)
-      new(*info)
-    end
+    include Virtus.model
+    attribute :link, String
+    attribute :title, String
+    attribute :year, Integer
+    attribute :country, String
+    attribute :date, Date
+    attribute :genre, String
+    attribute :length, String
+    attribute :rating, Float
+    attribute :director, String
+    attribute :actors, String
+    attribute :collection
+    INFO = %i[link title year country release_date genre length rating director actors collection]
 
     def self.create(movie, collection = nil)
       movie.push(collection)
-      year = movie[2]
-      if /\D/.match(year) || year.to_i < 1900
-        raise ArgumentError, "#{year} is not valid year"
+      movie_hash = INFO.zip(movie).to_h
+      if /\D/.match(movie_hash[:year]) || movie_hash[:year].to_i < 1900
+        raise ArgumentError, "#{movie_hash[:year]} is not valid year"
       end
-      case year.to_i
+      movie_hash[:year] = movie_hash[:year].to_i
+      movie_hash[:rating] = movie_hash[:rating].to_f
+      case movie_hash[:year]
       when 1900..1944
-        AncientMovie.new(*movie)
+        AncientMovie.new(movie_hash)
       when 1945..1967
-        ClassicMovie.new(*movie)
+        ClassicMovie.new(movie_hash)
       when 1968..1999
-        ModernMovie.new(*movie)
+        ModernMovie.new(movie_hash)
       else
-        NewMovie.new(*movie)
+        NewMovie.new(movie_hash)
       end
     end
 
@@ -69,10 +61,6 @@ module Cinema
 
     def genre
       @genre.split(',')
-    end
-
-    def year
-      @year.to_i
     end
 
     def inspect
