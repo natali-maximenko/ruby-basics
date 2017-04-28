@@ -40,24 +40,24 @@ describe Cinema::Movie do
 end
 
 describe Cinema::AncientMovie do
-  subject { Cinema::AncientMovie.new(link: 'http://imdb.com/title/tt0043014/?ref_=chttp_tt_49', title: 'Sunset Blvd.', year: '1950', country: 'USA', date: '1950-08-25', genre: 'Drama,Film-Noir', length: '110 min', rating: '8.5', director: 'Billy Wilder', actors: 'William Holden,Gloria Swanson,Erich von Stroheim') }
+  subject { Cinema::AncientMovie.new(link: 'http://imdb.com/title/tt0043014/?ref_=chttp_tt_49', title: 'Sunset Blvd.', year: '1950', country: 'USA', date: '1950-08-25', genre: ['Drama', 'Film-Noir'], length: '110 min', rating: '8.5', director: 'Billy Wilder', actors: ['William Holden', 'Gloria Swanson', 'Erich von Stroheim']) }
   its(:to_s) { is_expected.to eq('Sunset Blvd. - old movie (1950 year)') }
 end
 
 describe Cinema::ClassicMovie do
   let(:collection) { instance_double(Cinema::MovieCollection) }
-  subject { Cinema::ClassicMovie.new(link: 'http://imdb.com/title/tt0053291/?ref_=chttp_tt_111', title: 'Some Like It Hot', year: '1959', country: 'USA', date: '1959-03-29', genre: 'Comedy', length: '120 min', rating: '8.3', director: 'Billy Wilder', actors: 'Marilyn Monroe,Tony Curtis,Jack Lemmon', collection: collection) }
+  subject { Cinema::ClassicMovie.new(link: 'http://imdb.com/title/tt0053291/?ref_=chttp_tt_111', title: 'Some Like It Hot', year: '1959', country: 'USA', date: '1959-03-29', genre: ['Comedy'], length: '120 min', rating: '8.3', director: 'Billy Wilder', actors: ['Marilyn Monroe', 'Tony Curtis', 'Jack Lemmon'], collection: collection) }
   before { expect(collection).to receive(:filter).with(director: 'Billy Wilder').and_return(double(count: 5)) }
 
   its(:to_s) { is_expected.to eq('Some Like It Hot - classic movie, director Billy Wilder (5 movies in top-250)') }
 end
 
 describe Cinema::ModernMovie do
-  subject { Cinema::ModernMovie.new(link:'http://imdb.com/title/tt0169547/?ref_=chttp_tt_63', title: 'American Beauty', year: '1999', country: 'USA', date: '1999-10-01', genre: 'Drama,Romance', length: '122 min', rating: '8.4', director: 'Sam Mendes', actors: 'Kevin Spacey,Annette Bening,Thora Birch') }
+  subject { Cinema::ModernMovie.new(link:'http://imdb.com/title/tt0169547/?ref_=chttp_tt_63', title: 'American Beauty', year: '1999', country: 'USA', date: '1999-10-01', genre: ['Drama', 'Romance'], length: '122 min', rating: '8.4', director: 'Sam Mendes', actors: ['Kevin Spacey', 'Annette Bening', 'Thora Birch']) }
   its(:to_s) { is_expected.to eq('American Beauty - modern movie: play Kevin Spacey,Annette Bening,Thora Birch') }
 end
 
 describe Cinema::NewMovie do
-  subject { Cinema::NewMovie.new(link: 'http://imdb.com/title/tt1305806/?ref_=chttp_tt_135', title: 'The Secret in Their Eyes', year: '2009', country: 'Argentina', date: '2010-05-21', genre: 'Drama,Mystery,Thriller', length: '129 min', rating: '8.3', director: 'Juan José Campanella', actors: 'Ricardo Darín,Soledad Villamil,Pablo Rago') }
+  subject { Cinema::NewMovie.new(link: 'http://imdb.com/title/tt1305806/?ref_=chttp_tt_135', title: 'The Secret in Their Eyes', year: '2009', country: 'Argentina', date: '2010-05-21', genre: ['Drama', 'Mystery', 'Thriller'], length: '129 min', rating: '8.3', director: 'Juan José Campanella', actors: ['Ricardo Darín', ' Soledad Villamil', 'Pablo Rago']) }
   its(:to_s) { is_expected.to eq('The Secret in Their Eyes - latest, was released 8 years ago!') }
 end

@@ -1,6 +1,5 @@
 require 'date'
 require 'virtus'
-require_relative 'movie_collection'
 
 module Cinema
   class Movie
@@ -10,11 +9,11 @@ module Cinema
     attribute :year, Integer
     attribute :country, String
     attribute :date, Date
-    attribute :genre, String
+    attribute :genre, Array[String]
     attribute :length, String
     attribute :rating, Float
     attribute :director, String
-    attribute :actors, String
+    attribute :actors, Array[String]
     attribute :collection
     INFO = %i[link title year country release_date genre length rating director actors collection]
 
@@ -26,6 +25,8 @@ module Cinema
       end
       movie_hash[:year] = movie_hash[:year].to_i
       movie_hash[:rating] = movie_hash[:rating].to_f
+      movie_hash[:genre] = movie_hash[:genre].split(',')
+      movie_hash[:actors] = movie_hash[:actors].split(',')
       case movie_hash[:year]
       when 1900..1944
         AncientMovie.new(movie_hash)
@@ -55,20 +56,12 @@ module Cinema
       end
     end
 
-    def actors
-      @actors.split(',')
-    end
-
-    def genre
-      @genre.split(',')
-    end
-
     def inspect
       "<#{self.class.name} title: '#{@title}', year: #{@year}, country: #{@country}, date: #{@date}, genre: '#{@genre}', length: #{@length}, rating: #{@rating}, director: '#{@director}', actors: '#{@actors}'>\n"
     end
 
     def to_s
-      "Movie: #{@title} (#{@date}; #{@genre}; #{@country}; #{@rating}) - #{@length}"
+      "Movie: #{@title} (#{@date}; #{@genre.join(',')}; #{@country}; #{@rating}) - #{@length}"
     end
   end
 
@@ -102,7 +95,7 @@ module Cinema
     end
 
     def to_s
-      "#{@title} - modern movie: play #{@actors}"
+      "#{@title} - modern movie: play #{@actors.join(',')}"
     end
   end
 
