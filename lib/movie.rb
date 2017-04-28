@@ -2,6 +2,12 @@ require 'date'
 require 'virtus'
 
 module Cinema
+  class CommaString < Virtus::Attribute
+    def coerce(value)
+      value.is_a?(String) ? value.split(',') : value.join(',')
+    end
+  end
+
   class Movie
     include Virtus.model
     attribute :link, String
@@ -9,25 +15,22 @@ module Cinema
     attribute :year, Integer
     attribute :country, String
     attribute :date, Date
-    attribute :genre, Array[String]
+    attribute :genre, CommaString
     attribute :length, String
     attribute :rating, Float
     attribute :director, String
-    attribute :actors, Array[String]
+    attribute :actors, CommaString
     attribute :collection
     INFO = %i[link title year country release_date genre length rating director actors collection]
 
     def self.create(movie, collection = nil)
       movie.push(collection)
       movie_hash = INFO.zip(movie).to_h
-      if /\D/.match(movie_hash[:year]) || movie_hash[:year].to_i < 1900
+      year = movie_hash[:year].to_i
+      if /\D/.match(movie_hash[:year]) || year < 1900
         raise ArgumentError, "#{movie_hash[:year]} is not valid year"
       end
-      movie_hash[:year] = movie_hash[:year].to_i
-      movie_hash[:rating] = movie_hash[:rating].to_f
-      movie_hash[:genre] = movie_hash[:genre].split(',')
-      movie_hash[:actors] = movie_hash[:actors].split(',')
-      case movie_hash[:year]
+      case year
       when 1900..1944
         AncientMovie.new(movie_hash)
       when 1945..1967
@@ -61,7 +64,7 @@ module Cinema
     end
 
     def to_s
-      "Movie: #{@title} (#{@date}; #{@genre.join(',')}; #{@country}; #{@rating}) - #{@length}"
+      "Movie: #{@title} (#{@date}; #{@genre}; #{@country}; #{@rating}) - #{@length}"
     end
   end
 
@@ -95,7 +98,7 @@ module Cinema
     end
 
     def to_s
-      "#{@title} - modern movie: play #{@actors.join(',')}"
+      "#{@title} - modern movie: play #{@actors}"
     end
   end
 
