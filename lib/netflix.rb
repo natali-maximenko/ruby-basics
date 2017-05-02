@@ -1,5 +1,7 @@
 require_relative 'movie_collection'
 require_relative 'cashbox'
+require_relative 'collection_by_genre'
+require_relative 'collection_by_country'
 require 'money'
 
 module Cinema
@@ -18,6 +20,14 @@ module Cinema
       super
       @user_balance = Money.new(0, 'USD')
       @user_filters = {}
+    end
+
+    def by_genre
+      CollectionByGenre.new(self)
+    end
+
+    def by_country
+      CollectionByCountry.new(self)
     end
 
     def pay(amount)

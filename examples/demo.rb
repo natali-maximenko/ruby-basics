@@ -9,6 +9,8 @@ filtered = movies.sort_by(:year).first(10)
 #puts filtered
 puts
 netflix = Cinema::Netflix.new(filename)
+p netflix.by_country.usa
+exit()
 netflix.pay(20)
 puts Cinema::Netflix.cash
 #netflix.show(genre: 'Drama', period: :modern)

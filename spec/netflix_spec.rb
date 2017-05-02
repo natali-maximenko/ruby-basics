@@ -40,7 +40,7 @@ describe Cinema::Netflix do
 
       context 'when enough' do
         let(:amount) { 15 }
-        let(:filters) { { genre: 'Drama', period: :modern, rating: '8.8' } }
+        let(:filters) { { genre: 'Drama', period: :modern, rating: 8.8 } }
         subject { netflix.show(filters) }
         before do
           date = Date.today
@@ -118,6 +118,30 @@ describe Cinema::Netflix do
       it do
         is_expected.to all have_attributes(country: 'USA', genre: array_including('Sci-Fi'), :year => (a_value > 2014) )
       end
+    end
+  end
+
+  describe '#by_genre' do
+    subject { netflix.by_genre }
+    it { is_expected.to be_a(Cinema::CollectionByGenre) }
+
+    context 'drama' do
+      subject { netflix.by_genre.drama }
+      it { is_expected.to all have_attributes(genre: array_including('Drama')) }
+    end
+  end
+
+  describe '#by_country' do
+    subject { netflix.by_country }
+    it { is_expected.to be_a(Cinema::CollectionByCountry) }
+
+    context 'when country not exist' do
+      it { expect{  netflix.by_country.china }.to raise_error ArgumentError, 'country not exist in collection' }
+    end
+
+    context 'when country exist' do
+      subject { netflix.by_country.spain }
+      it { is_expected.to all have_attributes(country: 'Spain') }
     end
   end
 

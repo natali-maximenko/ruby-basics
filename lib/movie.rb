@@ -21,6 +21,7 @@ module Cinema
     attribute :director, String
     attribute :actors, CommaString
     attribute :collection
+    attribute :period, Symbol, :default => lambda { |movie, attribute| movie.class.name.gsub('Cinema::', '').gsub('Movie', '').downcase }
     INFO = %i[link title year country release_date genre length rating director actors collection]
 
     def self.create(movie, collection = nil)
@@ -69,20 +70,12 @@ module Cinema
   end
 
   class AncientMovie < Movie
-    def period
-      :ancient
-    end
-
     def to_s
       "#{@title} - old movie (#{@year} year)"
     end
   end
 
   class ClassicMovie < Movie
-    def period
-      :classic
-    end
-
     def to_s
       if @collection.nil?
         raise ArgumentError, 'Have no info about movies collection'
@@ -93,20 +86,12 @@ module Cinema
   end
 
   class ModernMovie < Movie
-    def period
-      :modern
-    end
-
     def to_s
       "#{@title} - modern movie: play #{@actors}"
     end
   end
 
   class NewMovie < Movie
-    def period
-      :new
-    end
-
     def to_s
       years = Date.today.year.to_i - @year.to_i
       "#{@title} - latest, was released #{years} years ago!"
