@@ -23,11 +23,11 @@ module Cinema
     end
 
     def by_genre
-      CollectionByGenre.new(self)
+      @by_genre ||= CollectionByGenre.new(self)
     end
 
     def by_country
-      CollectionByCountry.new(self)
+      @by_country ||= CollectionByCountry.new(self)
     end
 
     def pay(amount)

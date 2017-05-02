@@ -136,7 +136,25 @@ describe Cinema::Netflix do
     it { is_expected.to be_a(Cinema::CollectionByCountry) }
 
     context 'when country not exist' do
-      it { expect{  netflix.by_country.china }.to raise_error ArgumentError, 'country not exist in collection' }
+      it { expect{ netflix.by_country.china }.to raise_error ArgumentError, 'country not exist in collection' }
+    end
+
+    context 'when args received' do
+      it { expect{ netflix.by_country.usa(false) }.to raise_error ArgumentError, 'arguments not supported' }
+    end
+
+    context 'when block received' do
+      it { expect{ netflix.by_country.usa { |country| country.downcase } }.to raise_error ArgumentError, 'block not supported' }
+    end
+
+    context 'usa respond_to?' do
+      subject { netflix.by_country.respond_to?(:usa) && netflix.by_country.method(:usa) }
+      it { is_expected.to be_truthy }
+    end
+
+    context 'china respond_to?' do
+      subject { netflix.by_country.respond_to?(:china) && netflix.by_country.method(:china) }
+      it { is_expected.to be_falsey }
     end
 
     context 'when country exist' do

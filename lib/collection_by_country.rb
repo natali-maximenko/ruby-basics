@@ -8,11 +8,14 @@ module Cinema
     end
 
     def method_missing(m, *args, &block)
-      if @countries.key?(m)
-        @collection.filter(country:  @countries.fetch(m))
-      else
-        raise ArgumentError, 'country not exist in collection'
-      end
+      raise ArgumentError, 'arguments not supported' unless args.empty?
+      raise ArgumentError, 'block not supported' if block_given?
+      country_name = @countries.fetch(m) { raise ArgumentError, 'country not exist in collection' }
+      @collection.filter(country: country_name)
+    end
+
+    def respond_to_missing?(method, include_private = false)
+      @countries.key?(method) || super
     end
   end
 end
