@@ -1,10 +1,13 @@
 require_relative 'movie_collection'
 require_relative 'cashbox'
+require_relative 'hall'
+require_relative 'period'
 require 'date'
 require 'money'
 
 module Cinema
   class Theatre < MovieCollection
+    attr_reader :halls, :periods
     include Cashbox
     DAYTIME = {
       morning: { period: :ancient },
@@ -21,6 +24,21 @@ module Cinema
       day: 12..17,
       evening: 17..23
     }.freeze
+
+    def initialize(filename, &block)
+      super(filename)
+      @halls = {}
+      @periods = {}
+      instance_eval &block if block_given?
+    end
+
+    def hall(slug, title:, places:)
+      @halls[slug] = Cinema::Hall.new(slug, title, places)
+    end
+
+    def period(time, &block)
+      @periods[time] = Cinema::Period.new(time, &block)
+    end
 
     def show(time)
       daytime = daytime(DateTime.parse(time))

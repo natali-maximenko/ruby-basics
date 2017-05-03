@@ -52,4 +52,6 @@ describe Cinema::Theatre do
       it { is_expected.to eq('From 17:00 to 23:00') }
     end
   end
+
+
 end
