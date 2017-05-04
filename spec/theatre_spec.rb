@@ -53,5 +53,10 @@ describe Cinema::Theatre do
     end
   end
 
+  describe '#buy_ticket' do
+    subject { theatre.buy_ticket(movie) }
+    let(:movie) { theatre.filter_by_timetable({genre: %w[Comedy Adventure]}).first }
+    it { expect{ subject }.to output("You bought a ticket for The Lord of the Rings: The Return of the King, costs 10.00 USD\n").to_stdout }
+  end
 
 end

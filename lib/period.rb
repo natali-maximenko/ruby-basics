@@ -11,6 +11,10 @@ module Cinema
       instance_eval &block
     end
 
+    def time
+      @time
+    end
+
     def description(desc = nil)
       return @description if desc.nil?
       @description = desc
