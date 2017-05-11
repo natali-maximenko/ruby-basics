@@ -64,7 +64,7 @@ describe Cinema::Theatre do
     context 'period 09:00..11:00' do
       subject { theatre.schedule.periods[9..11] }
       it { is_expected.to be_a(Cinema::Period) }
-      its(:time) { is_expected.to eq('09:00'..'11:00') }
+      its(:time) { is_expected.to eq(9..11) }
       its(:description) { is_expected.to eq('Утренний сеанс') }
       its(:price) { is_expected.to eq(10) }
       its(:filters) { is_expected.to eq({genre: 'Comedy', year: 1900..1980}) }
@@ -139,7 +139,7 @@ describe Cinema::Theatre do
 
   describe '#valid?' do
     subject { theatre.schedule.valid? }
-    it { is_expected.to be_falsey }
+    it { is_expected.to be_truthy }
   end
 
 end

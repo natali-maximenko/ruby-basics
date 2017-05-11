@@ -7,11 +7,11 @@ module Cinema
   class CustomSchedule
     attr_reader :halls, :periods
 
-    def initialize(&block)
-      @halls = {}
-      @periods = {}
+    def initialize(halls = {}, periods = {}, &block)
+      @halls = halls
+      @periods = periods
       instance_eval &block
-      #raise ArgumentError, 'Invalid schedule' if not valid?
+      raise ArgumentError, 'Invalid schedule' if not valid?
     end
 
     def filters(date)
@@ -29,17 +29,11 @@ module Cinema
       if movietime.nil?
         raise ArgumentError, "You can't view movie '#{movie_title}'"
       end
-      "From #{@periods[movietime].time.first} to #{@periods[movietime].time.last}"
+      "From #{@periods[movietime].time.first}:00 to #{@periods[movietime].time.last}:00"
     end
 
     def valid?
-      times = {}
-      @halls.keys.each do |hall|
-        period = @periods.keys.select { |time| @periods[time].hall.include?(hall) }
-        timemap = period.flat_map { |range| range.to_a }
-        times[hall] = timemap.to_set
-      end
-      times.values.combination(2).all? { |t1, t2| not t1.intersect?(t1) }
+      !@periods.values.combination(2).any? { |p1, p2| p1.intersect?(p2) }
     end
 
     private
@@ -54,7 +48,7 @@ module Cinema
 
     def period(time, &block)
       slug = time.first.to_i..time.last.to_i
-      @periods[slug] = Cinema::Period.new(time, &block)
+      @periods[slug] = Cinema::Period.new(slug, &block)
     end
 
   end
