@@ -40,7 +40,7 @@ describe Cinema::Netflix do
 
       context 'when enough' do
         let(:amount) { 15 }
-        let(:filters) { { genre: 'Drama', period: :modern, rating: '8.8' } }
+        let(:filters) { { genre: 'Drama', period: :modern, rating: 8.8 } }
         subject { netflix.show(filters) }
         before do
           date = Date.today
@@ -91,10 +91,13 @@ describe Cinema::Netflix do
     end
 
     context 'custom filter and some attribute' do
-      before { netflix.define_filter(:sci_fi) { |movie| movie.genre.include?('Sci-Fi') && movie.country == 'USA' } }
+      before { netflix.define_filter(:sci_fi) { |movie| movie.genre.include?('Sci-Fi') && movie.country != 'UK' } }
       let(:filters) do { sci_fi: true, director: 'Christopher Nolan' } end
       it do
-        is_expected.to all have_attributes(country: 'USA', director: 'Christopher Nolan', genre: array_including('Sci-Fi'))
+        is_expected.to all (
+          satisfy('country is not UK') { |m| m.country != 'UK' }
+          .and have_attributes(director: 'Christopher Nolan', genre: array_including('Sci-Fi'))
+        )
       end
     end
 
@@ -115,6 +118,48 @@ describe Cinema::Netflix do
       it do
         is_expected.to all have_attributes(country: 'USA', genre: array_including('Sci-Fi'), :year => (a_value > 2014) )
       end
+    end
+  end
+
+  describe '#by_genre' do
+    subject { netflix.by_genre }
+    it { is_expected.to be_a(Cinema::CollectionByGenre) }
+
+    context 'drama' do
+      subject { netflix.by_genre.drama }
+      it { is_expected.to all have_attributes(genre: array_including('Drama')) }
+    end
+  end
+
+  describe '#by_country' do
+    subject { netflix.by_country }
+    it { is_expected.to be_a(Cinema::CollectionByCountry) }
+
+    context 'when country not exist' do
+      it { expect{ netflix.by_country.china }.to raise_error ArgumentError, 'country not exist in collection' }
+    end
+
+    context 'when args received' do
+      it { expect{ netflix.by_country.usa(false) }.to raise_error ArgumentError, 'arguments not supported' }
+    end
+
+    context 'when block received' do
+      it { expect{ netflix.by_country.usa { |country| country.downcase } }.to raise_error ArgumentError, 'block not supported' }
+    end
+
+    context 'usa respond_to?' do
+      subject { netflix.by_country.respond_to?(:usa) && netflix.by_country.method(:usa) }
+      it { is_expected.to be_truthy }
+    end
+
+    context 'china respond_to?' do
+      subject { netflix.by_country.respond_to?(:china) && netflix.by_country.method(:china) }
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when country exist' do
+      subject { netflix.by_country.spain }
+      it { is_expected.to all have_attributes(country: 'Spain') }
     end
   end
 

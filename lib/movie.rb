@@ -1,48 +1,45 @@
 require 'date'
+require 'virtus'
 
 module Cinema
+  class CommaString < Virtus::Attribute
+    def coerce(value)
+      value.is_a?(String) ? value.split(',') : value.join(',')
+    end
+  end
+
   class Movie
-    attr_accessor :link, :title, :year, :country, :date, :genre,
-                  :length, :rating, :director, :actors, :collection
-
-    def initialize(link, title, year, country, date, genre, length, rating, director, actors, collection = nil)
-      @link = link
-      @title = title
-      @year = year
-      @country = country
-      @date = date
-      @genre = genre
-      @length = length
-      @rating = rating
-      @director = director
-      @actors = actors
-      @collection = collection
-    end
-
-    def self.load_from_csv(string, pattern = '|')
-      info = string.split(pattern)
-      new(*info)
-    end
-
-    def self.load_from_array(info)
-      new(*info)
-    end
+    include Virtus.model
+    attribute :link, String
+    attribute :title, String
+    attribute :year, Integer
+    attribute :country, String
+    attribute :date, Date
+    attribute :genre, CommaString
+    attribute :length, String
+    attribute :rating, Float
+    attribute :director, String
+    attribute :actors, CommaString
+    attribute :collection
+    attribute :period, Symbol, :default => lambda { |movie, attribute| movie.class.name.gsub('Cinema::', '').gsub('Movie', '').downcase }
+    INFO = %i[link title year country release_date genre length rating director actors collection]
 
     def self.create(movie, collection = nil)
       movie.push(collection)
-      year = movie[2]
-      if /\D/.match(year) || year.to_i < 1900
-        raise ArgumentError, "#{year} is not valid year"
+      movie_hash = INFO.zip(movie).to_h
+      year = movie_hash[:year].to_i
+      if /\D/.match(movie_hash[:year]) || year < 1900
+        raise ArgumentError, "#{movie_hash[:year]} is not valid year"
       end
-      case year.to_i
+      case year
       when 1900..1944
-        AncientMovie.new(*movie)
+        AncientMovie.new(movie_hash)
       when 1945..1967
-        ClassicMovie.new(*movie)
+        ClassicMovie.new(movie_hash)
       when 1968..1999
-        ModernMovie.new(*movie)
+        ModernMovie.new(movie_hash)
       else
-        NewMovie.new(*movie)
+        NewMovie.new(movie_hash)
       end
     end
 
@@ -63,18 +60,6 @@ module Cinema
       end
     end
 
-    def actors
-      @actors.split(',')
-    end
-
-    def genre
-      @genre.split(',')
-    end
-
-    def year
-      @year.to_i
-    end
-
     def inspect
       "<#{self.class.name} title: '#{@title}', year: #{@year}, country: #{@country}, date: #{@date}, genre: '#{@genre}', length: #{@length}, rating: #{@rating}, director: '#{@director}', actors: '#{@actors}'>\n"
     end
@@ -85,20 +70,12 @@ module Cinema
   end
 
   class AncientMovie < Movie
-    def period
-      :ancient
-    end
-
     def to_s
       "#{@title} - old movie (#{@year} year)"
     end
   end
 
   class ClassicMovie < Movie
-    def period
-      :classic
-    end
-
     def to_s
       if @collection.nil?
         raise ArgumentError, 'Have no info about movies collection'
@@ -109,20 +86,12 @@ module Cinema
   end
 
   class ModernMovie < Movie
-    def period
-      :modern
-    end
-
     def to_s
       "#{@title} - modern movie: play #{@actors}"
     end
   end
 
   class NewMovie < Movie
-    def period
-      :new
-    end
-
     def to_s
       years = Date.today.year.to_i - @year.to_i
       "#{@title} - latest, was released #{years} years ago!"

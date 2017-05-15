@@ -27,6 +27,10 @@ module Cinema
       @collection
     end
 
+    def genres
+      @collection.map(&:genre).flatten.uniq.sort
+    end
+
     def sort_by(field)
       @collection.sort_by(&field)
     end

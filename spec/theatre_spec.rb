@@ -15,7 +15,7 @@ describe Cinema::Theatre do
     end
 
     context 'show film by period' do
-      let(:time) { '18:05' }
+      let(:time) { '18:00' }
       before do
         date = Date.today
         time = Time.local(date.year, date.month, date.day, 18, 0, 0)
@@ -52,4 +52,11 @@ describe Cinema::Theatre do
       it { is_expected.to eq('From 17:00 to 23:00') }
     end
   end
+
+  describe '#buy_ticket' do
+    subject { theatre.buy_ticket(movie) }
+    let(:movie) { theatre.filter({genre: %w[Comedy Adventure]}).first }
+    it { expect{ subject }.to output("You bought a ticket for The Lord of the Rings: The Return of the King, costs 10.00 USD\n").to_stdout }
+  end
+
 end
