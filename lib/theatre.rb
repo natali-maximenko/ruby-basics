@@ -1,17 +1,19 @@
 require_relative 'movie_collection'
 require_relative 'cashbox'
-require_relative 'schedule_builder'
+#require_relative 'schedule_builder'
+require_relative 'schedule'
+require_relative 'custom_schedule'
 require 'date'
 require 'money'
 
 module Cinema
   class Theatre < MovieCollection
-    attr_reader :schedule
     include Cashbox
+    attr_reader :schedule
 
     def initialize(filename, &block)
       super(filename)
-      @schedule = ScheduleBuilder.build(&block)
+      @schedule = block_given? ? CustomSchedule.new(&block) : Schedule.new
     end
 
     def show(time)

@@ -1,9 +1,9 @@
-require_relative 'hall'
 require_relative 'period'
 require 'money'
-require 'set'
 
 module Cinema
+  Hall = Struct.new(:slug, :title, :places)
+
   class CustomSchedule
     attr_reader :halls, :periods
 

@@ -1,3 +1,5 @@
+require 'set'
+
 module Cinema
   class Period
     def initialize(time, &block)
@@ -7,7 +9,7 @@ module Cinema
       @title = ''
       @price = 0
       @hall = []
-      raise 'You need a block to build!' unless block_given?
+      raise ArgumentError, 'You need a block to build!' unless block_given?
       instance_eval &block
     end
 
