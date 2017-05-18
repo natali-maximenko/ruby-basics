@@ -3,44 +3,45 @@ require 'open-uri'
 require 'yaml'
 
 module Cinema
-  MovieBudget = Struct.new(:id, :budget)
   class MovieScraper
-    attr_reader :url, :id, :budget
+    TMP_DIR = './upload'
+    attr_reader :collection, :file
 
-    def initialize(movie_url)
-      @url = movie_url
-      @id = movie_url.split('/')[4]
-      read
-      parse_budget
-    end
-
-    def save_budget
-      str = YAML.dump MovieBudget.new(@id, @budget)
-      if (!File.exist?("./upload/#{@id}.yaml"))
-        f = File.open("./upload/#{@id}.yaml", 'w+')
+    def initialize(collection, file = "./budget.yaml")
+      @collection = collection
+      @file = file
+      if (!File.exist?(@file))
+        f = File.open(@file, 'w+')
         f.close
       end
-      File.write("./upload/#{@id}.yaml", str)
     end
 
-    def print_budget
-      puts YAML.load_file("./upload/#{@id}.yaml")
+    def budgets
+      save_file(parse_budgets) if File.empty?(@file)
+      YAML.load_file(@file)
+    end
+
+    def parse_budgets
+      @collection.map do |movie| { id: movie.id, budget: parse_budget(movie) } end
     end
 
     private
 
-    def parse_budget
-      html = File.open("./upload/#{@id}").read
-      page = Nokogiri::HTML(html)
-      div = page.css('div.txt-block')[9]
-      title = div.css('h4.inline').text.strip
-      @budget = title == 'Budget:' ? div.children[2].text.strip : 'no information'
+    def save_file(budgets)
+      File.write(@file, budgets.to_yaml)
     end
 
-    def read
-      if (!File.exist?("./upload/#{@id}"))
-        open("./upload/#{@id}", 'wb') do |file|
-          open(@url) do |uri|
+    def parse_budget(movie)
+      read(movie.id, movie.link) unless File.exist?("#{TMP_DIR}/#{movie.id}")
+      page = Nokogiri::HTML(File.open("#{TMP_DIR}/#{movie.id}").read)
+      div = page.css('div.txt-block')[9]
+      budget = div.css('h4.inline').text.strip == 'Budget:' ? div.children[2].text.strip : nil
+    end
+
+    def read(id, url)
+      if (!File.exist?("#{TMP_DIR}/#{id}"))
+        open("#{TMP_DIR}/#{id}", 'wb') do |file|
+          open(url) do |uri|
             file.write(uri.read)
           end
         end

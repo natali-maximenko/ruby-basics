@@ -57,5 +57,12 @@ module Cinema
     def most_popular_movie(collection)
       collection.sort_by { |movie| movie.rating * rand(0.0..1.5) }.last
     end
+
+    def load_budgets(hash)
+      @collection.each do |movie|
+        param = hash.select { |info| movie.id == info[:id] }.first
+        movie.budget = param[:budget] unless param.nil?
+      end
+    end
   end
 end

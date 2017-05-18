@@ -22,6 +22,8 @@ module Cinema
     attribute :actors, CommaString
     attribute :collection
     attribute :period, Symbol, :default => lambda { |movie, attribute| movie.class.name.gsub('Cinema::', '').gsub('Movie', '').downcase }
+    attribute :id, String, :default => lambda { |movie, attribute| movie.link.split('/')[4] }
+    attribute :budget, String, :default => nil
     INFO = %i[link title year country release_date genre length rating director actors collection]
 
     def self.create(movie, collection = nil)
