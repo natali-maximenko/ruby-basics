@@ -16,19 +16,12 @@ module Cinema
       end
     end
 
-    def budgets
-      save_file(parse_budgets) if File.empty?(@file)
-      YAML.load_file(@file)
+    def budgets(from_cache: true)
+      from_cache ? load_file : parse_budgets
     end
 
     def parse_budgets
       @collection.map do |movie| { id: movie.id, budget: parse_budget(movie) } end
-    end
-
-    private
-
-    def save_file(budgets)
-      File.write(@file, budgets.to_yaml)
     end
 
     def parse_budget(movie)
@@ -36,6 +29,17 @@ module Cinema
       page = Nokogiri::HTML(File.open("#{TMP_DIR}/#{movie.id}").read)
       div = page.css('div.txt-block')[9]
       budget = div.css('h4.inline').text.strip == 'Budget:' ? div.children[2].text.strip : nil
+    end
+
+    private
+
+    def load_file
+      save_file(parse_budgets) if File.empty?(@file)
+      YAML.load_file(@file)
+    end
+
+    def save_file(budgets)
+      File.write(@file, budgets.to_yaml)
     end
 
     def read(id, url)
@@ -47,6 +51,7 @@ module Cinema
         end
       end
     end
+
   end
 end
 
