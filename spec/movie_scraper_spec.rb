@@ -1,5 +1,4 @@
 require 'rspec'
-require 'spec_helper.rb'
 require_relative '../lib/movie_scraper'
 require_relative '../lib/movie_collection'
 require 'themoviedb-api'
@@ -31,11 +30,11 @@ describe Cinema::MovieScraper do
     end
   end
 
-  describe '#parse_budget' do
-    subject { scraper.parse_budget(movie) }
-    let(:movie) { collection.filter(id: 'tt0071562').first }
-    it 'return budget' do
-      is_expected.to eq '$13,000,000'
+  describe '#parse_budget', :vcr do
+    VCR.use_cassette('parse_budget') do
+      subject { scraper.parse_budget(movie) }
+      let(:movie) { collection.filter(id: 'tt0071562').first }
+      it 'return budget' do is_expected.to eq '$13,000,000' end
     end
   end
 
@@ -47,11 +46,13 @@ describe Cinema::MovieScraper do
     end
   end
 
-  describe '#movie_detail' do
-    subject { scraper.movie_detail('tt0071562') }
-    it do
-      is_expected.to be_a(Tmdb::Movie)
-        .and have_attributes(id: 240, original_title: 'The Godfather: Part II', poster_path: '/aPnTXa2TnhXX4HPQMJz0B0ElqqI.jpg', title: 'Крестный отец 2')
+  describe '#movie_detail', :vcr do
+    VCR.use_cassette('movie_detail') do
+      subject { scraper.movie_detail('tt0071562') }
+      it do
+        is_expected.to be_a(Tmdb::Movie)
+          .and have_attributes(id: 240, original_title: 'The Godfather: Part II', poster_path: '/aPnTXa2TnhXX4HPQMJz0B0ElqqI.jpg', title: 'Крестный отец 2')
+      end
     end
   end
 

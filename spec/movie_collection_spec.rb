@@ -29,8 +29,7 @@ describe Cinema::MovieCollection do
 
     context 'year' do
       let(:attribute) { :year }
-      it { expect(movies.first.year).to eq(1921) }
-      it { expect(movies.last.year).to eq(2015) }
+      it { is_expected.to all have_attributes(year: 1921..2015) }
     end
 
     context 'id' do
@@ -42,7 +41,7 @@ describe Cinema::MovieCollection do
 
   describe '#load_budgets' do
     subject { collection.filter(budget: '$25,000,000') }
-    before { collection.load_budgets(YAML.load_file('./budget.yaml')) }
+    before { collection.load_budgets(YAML.load_file('./budget.yml')) }
     it { is_expected.to all have_attributes(budget: '$25,000,000') }
   end
 
