@@ -6,14 +6,18 @@ require 'themoviedb-api'
 module Cinema
   class MovieScraper
     TMP_DIR = './upload'
-    TMDB_KEY = '374ec1b6307d5583ba7e0805836077aa'
+    TMDB_CONFIG = './config/tmdb_api.yml'
     attr_reader :collection, :file
 
-    def initialize(collection, file = "./budget.yaml")
+    def initialize(collection, file = "./budget.yml")
       @collection = collection
       @file = file
-      Tmdb::Api.key(TMDB_KEY)
-      Tmdb::Api.language("ru")
+      raise ArgumentError, 'need tmdb config' unless File.exist?(TMDB_CONFIG)
+      tmdb = YAML.load_file(TMDB_CONFIG)
+      if tmdb && tmdb[:key]
+        Tmdb::Api.key(tmdb[:key])
+        Tmdb::Api.language("ru")
+      end
     end
 
     def budgets(from_cache: true)
