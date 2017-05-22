@@ -21,9 +21,11 @@ module Cinema
     attribute :director, String
     attribute :actors, CommaString
     attribute :collection
-    attribute :period, Symbol, :default => lambda { |movie, attribute| movie.class.name.gsub('Cinema::', '').gsub('Movie', '').downcase }
-    attribute :id, String, :default => lambda { |movie, attribute| movie.link.split('/')[4] }
-    attribute :budget, String, :default => nil
+    attribute :period, Symbol, default: ->(movie, attribute) { movie.class.name.gsub('Cinema::', '').gsub('Movie', '').downcase }
+    attribute :id, String, default: ->(movie, attribute) { movie.link.split('/')[4] }
+    attribute :budget, String, default: nil
+    attribute :alt_title, String, default: nil
+    attribute :poster, String, default: nil
     INFO = %i[link title year country release_date genre length rating director actors collection]
 
     def self.create(movie, collection = nil)
@@ -63,7 +65,7 @@ module Cinema
     end
 
     def inspect
-      "<#{self.class.name} title: '#{@title}', year: #{@year}, country: #{@country}, date: #{@date}, genre: '#{@genre}', length: #{@length}, rating: #{@rating}, director: '#{@director}', actors: '#{@actors}'>\n"
+      "<#{self.class.name} title: '#{@title}', year: #{@year}, country: #{@country}, date: #{@date}, genre: '#{@genre}', length: #{@length}, rating: #{@rating}, director: '#{@director}', actors: '#{@actors}', budget: #{budget}, alt_title: '#{alt_title}'>\n"
     end
 
     def to_s

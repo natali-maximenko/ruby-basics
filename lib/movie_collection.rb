@@ -1,10 +1,12 @@
 require_relative 'movie'
 require 'csv'
 require 'date'
+require 'erb'
 
 module Cinema
   class MovieCollection
     include Enumerable
+    include ERB::Util
     attr_accessor :collection
     TIMEFORMAT = '%H:%M'.freeze
     SHOW_MSG = 'Now showing: %s %s - %s'.freeze
@@ -63,6 +65,24 @@ module Cinema
         param = hash.select { |info| movie.id == info[:id] }.first
         movie.budget = param[:budget] unless param.nil?
       end
+    end
+
+    def load_detail(info)
+      @collection.each do |movie|
+        detail = info.detect { |tmdb| movie.title == tmdb[:original_title] }
+        unless detail.nil?
+          movie.alt_title = detail[:title]
+          movie.poster = detail[:poster_path]
+        end
+      end
+    end
+
+    def render
+      ERB.new(File.open('./templates/movie_table.erb').read).result(binding)
+    end
+
+    def save(file)
+      File.open(file, "w+") do |f| f.write(render) end
     end
   end
 end
