@@ -1,5 +1,6 @@
 require 'rspec'
 require 'rspec/its'
+require 'yaml'
 require_relative '../lib/movie_collection'
 
 describe Cinema::MovieCollection do
@@ -24,8 +25,24 @@ describe Cinema::MovieCollection do
   end
 
   describe '#sort by' do
-    subject(:movies) { collection.sort_by(:year) }
-    it { expect(movies.first.year).to eq(1921) }
-    it { expect(movies.last.year).to eq(2015) }
+    subject(:movies) { collection.sort_by(attribute) }
+
+    context 'year' do
+      let(:attribute) { :year }
+      it { is_expected.to all have_attributes(year: 1921..2015) }
+    end
+
+    context 'id' do
+      let(:attribute) { :id }
+      it { expect(movies.first.id).to eq('tt0012349') }
+      it { expect(movies.last.id).to eq('tt3011894') }
+    end
   end
+
+  describe '#load_budgets' do
+    subject { collection.filter(budget: '$25,000,000') }
+    before { collection.load_budgets(YAML.load_file('./budget.yml')) }
+    it { is_expected.to all have_attributes(budget: '$25,000,000') }
+  end
+
 end
