@@ -78,7 +78,7 @@ module Cinema
     end
 
     def render
-      ERB.new(File.open('./templates/movie_table.erb').read).result(binding)
+      ERB.new(File.open(File.join(File.dirname(File.expand_path(__FILE__)), '/templates/movie_collection.html.erb')).read).result(binding)
     end
 
     def save(file)

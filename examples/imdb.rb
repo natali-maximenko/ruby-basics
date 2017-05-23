@@ -1,5 +1,5 @@
-require_relative '../lib/movie_collection'
-require_relative '../lib/movie_scraper'
+require_relative '../lib/cinema/movie_collection'
+require_relative '../lib/cinema/movie_scraper'
 
 movies = Cinema::MovieCollection.new('movies.txt')
 parser = Cinema::MovieScraper.new(movies)
