@@ -3,3 +3,4 @@ budget.yml
 /config/tmdb_api.yml
 /spec/vcr
 /upload
+/.yardoc
