@@ -1,6 +1,6 @@
-require_relative '../lib/movie_collection'
-require_relative '../lib/netflix'
-require_relative '../lib/theatre'
+require_relative '../lib/cinema/movie_collection'
+require_relative '../lib/cinema/netflix'
+require_relative '../lib/cinema/theatre'
 
 filename = ARGV[0] || 'movies.txt'
 
@@ -13,7 +13,8 @@ p netflix.by_country.usa
 exit()
 netflix.pay(20)
 puts Cinema::Netflix.cash
-#netflix.show(genre: 'Drama', period: :modern)
+netflix.show(genre: 'Drama', period: :modern)
+exit()
 #netflix.show { |movie| !movie.title.include?('Terminator') && movie.genre.include?('Action') && movie.year > 2003}
 netflix.define_filter(:sci_fi) { |movie| movie.genre.include?('Sci-Fi') && movie.country != 'UK' }
 netflix.show(sci_fi: true)
