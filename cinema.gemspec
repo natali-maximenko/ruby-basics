@@ -8,10 +8,17 @@ Gem::Specification.new do |s|
   s.homepage     = 'http://github.com/natali-maximenko/ruby-basics'
   s.license      = 'MIT'
 
-  s.files        = Dir["{lib}/**/*.rb", "{lib}/**/templates/*", "bin/*", "{doc}/*", "{doc}/**/*", "*.md"]
+  s.files        = Dir["{lib}/**/*.rb", "{lib}/**/templates/*", "bin/*", "*.md", '.rspec']
   s.require_path = 'lib'
   s.executables   = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.test_files    = s.files.grep(%r{^spec/})
 
   s.add_development_dependency 'rspec', '~> 3.0'
+  s.add_development_dependency 'rspec-its'
+  s.add_development_dependency 'yard'
+  s.add_development_dependency 'timecop'
+  s.add_development_dependency 'money'
+  s.add_development_dependency 'virtus'
+  s.add_development_dependency 'nokogiri'
+  s.add_development_dependency 'themoviedb-api'
 end

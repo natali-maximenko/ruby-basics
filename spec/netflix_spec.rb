@@ -1,8 +1,3 @@
-require 'spec_helper'
-require 'date'
-require 'timecop'
-require 'money'
-
 describe Cinema::Netflix do
   let(:netflix) { Cinema::Netflix.new('movies.txt') }
 

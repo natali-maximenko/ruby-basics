@@ -1,6 +1,3 @@
-require 'spec_helper'
-require 'themoviedb-api'
-
 describe Cinema::MovieScraper do
   let(:collection) { Cinema::MovieCollection.new('movies.txt') }
   subject(:scraper) { Cinema::MovieScraper.new(collection) }

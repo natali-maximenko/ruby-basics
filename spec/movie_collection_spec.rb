@@ -1,6 +1,3 @@
-require 'yaml'
-require 'spec_helper'
-
 describe Cinema::MovieCollection do
   let(:collection) { Cinema::MovieCollection.new('movies.txt') }
 

@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Cinema::Period do
   describe '#initialize' do
     subject { Cinema::Period.new('11:00'..'13:00') }

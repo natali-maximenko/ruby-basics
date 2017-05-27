@@ -1,6 +1,3 @@
-require 'spec_helper'
-require 'money'
-
 describe Cinema::Cashbox do
   let(:cashbox) { Object.new.extend Cinema::Cashbox }
 

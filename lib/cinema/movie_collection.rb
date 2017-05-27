@@ -1,7 +1,4 @@
 require_relative 'movie'
-require 'csv'
-require 'date'
-require 'erb'
 
 module Cinema
   class MovieCollection
@@ -50,7 +47,7 @@ module Cinema
 
     # Filter movies collection
     # @param attrs_hash [Hash] hash with movie attribute {attribute: value}
-    # @note if attribute is [Integer] you may pass [Range] in value
+    # @note Attributes checking is performed with ===, so you can pass ranges, regexps and other generic patterns
     # @return [Array] filtered movies list
     def filter(**attrs_hash)
       attrs_hash.reduce(@collection) do |memo, (key, value)|
@@ -77,13 +74,6 @@ module Cinema
       puts SHOW_MSG % [movie.title, start_time.strftime(TIMEFORMAT), end_time.strftime(TIMEFORMAT)]
     end
 
-    # Choose random popular movie by rating
-    # @param collection [Array(Movie)]
-    # @return [Movie]
-    def most_popular_movie(collection)
-      collection.sort_by { |movie| movie.rating * rand(0.0..1.5) }.last
-    end
-
     # Load budgets for movies in collection
     # @param hash [Hash] {id: imdb_movie_id [String], budget: [String]$ }
     def load_budgets(hash)
@@ -105,14 +95,21 @@ module Cinema
       end
     end
 
-    # Render table of movies from ERB template
-    def render
-      ERB.new(File.open(File.join(File.dirname(File.expand_path(__FILE__)), '/templates/movie_collection.html.erb')).read).result(binding)
-    end
-
     # Save rendered list into file
     def save(file)
       File.open(file, "w+") do |f| f.write(render) end
+    end
+
+    private
+
+    # Choose random popular movie by rating
+    def most_popular_movie(collection)
+      collection.sort_by { |movie| movie.rating * rand(0.0..1.5) }.last
+    end
+
+    # Render table of movies from ERB template
+    def render
+      ERB.new(File.open(File.join(File.dirname(File.expand_path(__FILE__)), '/templates/movie_collection.html.erb')).read).result(binding)
     end
   end
 end

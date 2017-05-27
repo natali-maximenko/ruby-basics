@@ -1,8 +1,3 @@
-require 'spec_helper'
-require 'date'
-require 'timecop'
-require 'money'
-
 describe Cinema::Theatre do
   let(:theatre) do
     Cinema::Theatre.new('movies.txt') do

@@ -1,5 +1,3 @@
-require 'money'
-require 'date'
 require_relative 'movie'
 
 module Cinema

@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Cinema::Movie do
   describe '#create' do
     subject { Cinema::Movie.create(movie) }
