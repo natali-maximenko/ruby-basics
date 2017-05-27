@@ -1,6 +1,4 @@
-require 'rspec'
-require 'rspec/its'
-require_relative '../lib/theatre'
+require 'spec_helper'
 require 'date'
 require 'timecop'
 require 'money'

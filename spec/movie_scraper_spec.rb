@@ -1,6 +1,4 @@
-require 'rspec'
-require_relative '../lib/movie_scraper'
-require_relative '../lib/movie_collection'
+require 'spec_helper'
 require 'themoviedb-api'
 
 describe Cinema::MovieScraper do

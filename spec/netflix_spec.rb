@@ -1,9 +1,7 @@
-require 'rspec'
+require 'spec_helper'
 require 'date'
 require 'timecop'
 require 'money'
-require_relative '../lib/netflix'
-require_relative '../lib/movie'
 
 describe Cinema::Netflix do
   let(:netflix) { Cinema::Netflix.new('movies.txt') }

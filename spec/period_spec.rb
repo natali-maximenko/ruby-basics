@@ -1,5 +1,4 @@
-require 'rspec'
-require_relative '../lib/period'
+require 'spec_helper'
 
 describe Cinema::Period do
   describe '#initialize' do

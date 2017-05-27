@@ -1,3 +1,6 @@
+require 'rspec'
+require 'rspec/its'
+require 'cinema'
 require 'vcr'
 require 'webmock/rspec'
 

@@ -1,7 +1,4 @@
-require 'rspec'
-require 'rspec/its'
-require_relative '../lib/movie'
-require_relative '../lib/movie_collection'
+require 'spec_helper'
 
 describe Cinema::Movie do
   describe '#create' do
