@@ -13,12 +13,12 @@ Gem::Specification.new do |s|
   s.executables   = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.test_files    = s.files.grep(%r{^spec/})
 
-  s.add_development_dependency 'rspec', '~> 3.0'
-  s.add_development_dependency 'rspec-its'
-  s.add_development_dependency 'yard'
-  s.add_development_dependency 'timecop'
-  s.add_development_dependency 'money'
-  s.add_development_dependency 'virtus'
-  s.add_development_dependency 'nokogiri'
-  s.add_development_dependency 'themoviedb-api'
+  s.add_runtime_dependency 'rspec', '~> 3.0'
+  s.add_runtime_dependency 'rspec-its'
+  s.add_runtime_dependency 'yard'
+  s.add_runtime_dependency 'timecop'
+  s.add_runtime_dependency 'money'
+  s.add_runtime_dependency 'virtus'
+  s.add_runtime_dependency 'nokogiri'
+  s.add_runtime_dependency 'themoviedb-api'
 end
