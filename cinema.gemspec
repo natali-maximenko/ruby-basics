@@ -10,4 +10,5 @@ Gem::Specification.new do |s|
 
   s.files        = Dir["{lib}/**/*.rb", "{lib}/**/templates/*", "bin/*", "LICENSE", "*.md"]
   s.require_path = 'lib'
+  s.executables   = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
 end

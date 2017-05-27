@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+require 'cinema'
+require 'optparse'
+
+theatre = Cinema::Theatre.new('movies.txt')
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Theatre: movie house"
+  opts.define_head "Usage: theatre [options]"
+  opts.separator ""
+  opts.separator "Examples:"
+  opts.separator "  theatre --show 20:00"
+  opts.separator "  theatre --when 'American History X'"
+  opts.separator ""
+  opts.separator "For more information see http://github.com/natali-maximenko/ruby-basics/"
+  opts.separator ""
+  opts.separator "Options:"
+
+  opts.on_tail("-h", "-?", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+
+  opts.on("-s", '--show [time]', 'show movie') do |time|
+    options[:show] = time
+    theatre.show(time)
+  end
+  opts.on("-w", '--when [movie]', 'when watch the movie') do |movie|
+    options[:when] = movie
+    puts "#{theatre.when?(movie)} you can watch '#{movie}'"
+  end
+end.parse!

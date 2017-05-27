@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+
+require 'cinema'
+require 'slop'
+
+netflix = Cinema::Netflix.new('movies.txt')
+opts = Slop.parse do |o|
+  o.banner = "Niflix: online cinema"
+  o.separator "Usage: netflix [options]"
+  o.separator ""
+  o.separator "Examples:"
+  o.separator "  netflix --pay 25"
+  o.separator "  netflix --show genre:Comedy,director:'Billy Wilder'"
+  o.separator "  netflix --how_much 'The Terminator'"
+  o.separator ""
+  o.separator "For more information see http://github.com/natali-maximenko/ruby-basics/"
+  o.separator ""
+  o.separator "Options:"
+  o.int "-p", "--pay", 'payment', default: 80
+  o.array "-s", "--show", 'show movie with filters[Array]'
+  o.string "-c", "--how_much", 'how much costs the movie'
+  o.on '--help' do
+    puts o
+    exit
+  end
+end
+
+result = opts.to_h
+if result[:pay]
+  netflix.pay(result[:pay])
+  puts "Your balance: #{Cinema::Netflix.cash} USD"
+end
+if result[:how_much]
+  movie = result[:how_much]
+  puts "#{movie} costs #{netflix.how_much?(movie)} USD"
+end
+if result[:show]
+  hash = Hash.new
+  result[:show].each do |param|
+    key, value = param.split(':')
+    hash[key.to_sym] = value
+  end
+  netflix.show(hash)
+end
