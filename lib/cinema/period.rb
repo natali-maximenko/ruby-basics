@@ -1,5 +1,3 @@
-require 'set'
-
 module Cinema
   class Period
     def initialize(time, &block)

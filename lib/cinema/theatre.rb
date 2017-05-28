@@ -1,10 +1,7 @@
 require_relative 'movie_collection'
 require_relative 'cashbox'
-#require_relative 'schedule_builder'
 require_relative 'schedule'
 require_relative 'custom_schedule'
-require 'date'
-require 'money'
 
 module Cinema
   class Theatre < MovieCollection

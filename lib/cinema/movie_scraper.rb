@@ -1,8 +1,3 @@
-require 'nokogiri'
-require 'open-uri'
-require 'yaml'
-require 'themoviedb-api'
-
 module Cinema
   class MovieScraper
     TMP_DIR = './upload'

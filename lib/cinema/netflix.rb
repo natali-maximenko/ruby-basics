@@ -2,7 +2,6 @@ require_relative 'movie_collection'
 require_relative 'cashbox'
 require_relative 'collection_by_genre'
 require_relative 'collection_by_country'
-require 'money'
 
 module Cinema
   class Netflix < MovieCollection

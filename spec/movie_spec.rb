@@ -1,8 +1,3 @@
-require 'rspec'
-require 'rspec/its'
-require_relative '../lib/movie'
-require_relative '../lib/movie_collection'
-
 describe Cinema::Movie do
   describe '#create' do
     subject { Cinema::Movie.create(movie) }

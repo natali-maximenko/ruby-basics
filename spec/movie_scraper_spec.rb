@@ -1,8 +1,3 @@
-require 'rspec'
-require_relative '../lib/movie_scraper'
-require_relative '../lib/movie_collection'
-require 'themoviedb-api'
-
 describe Cinema::MovieScraper do
   let(:collection) { Cinema::MovieCollection.new('movies.txt') }
   subject(:scraper) { Cinema::MovieScraper.new(collection) }

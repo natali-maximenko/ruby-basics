@@ -1,6 +1,3 @@
-require 'date'
-require 'virtus'
-
 module Cinema
   class CommaString < Virtus::Attribute
     def coerce(value)

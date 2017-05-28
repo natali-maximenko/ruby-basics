@@ -1,8 +1,3 @@
-require 'rspec'
-require 'rspec/its'
-require 'yaml'
-require_relative '../lib/movie_collection'
-
 describe Cinema::MovieCollection do
   let(:collection) { Cinema::MovieCollection.new('movies.txt') }
 

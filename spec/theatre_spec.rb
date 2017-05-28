@@ -1,8 +1,3 @@
-require 'rspec'
-require 'date'
-require 'timecop'
-require_relative '../lib/theatre'
-
 describe Cinema::Theatre do
   let(:theatre) { Cinema::Theatre.new('movies.txt') }
 

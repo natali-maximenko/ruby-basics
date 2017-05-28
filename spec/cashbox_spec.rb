@@ -1,7 +1,3 @@
-require 'rspec'
-require 'money'
-require_relative '../lib/cashbox'
-
 describe Cinema::Cashbox do
   let(:cashbox) { Object.new.extend Cinema::Cashbox }
 

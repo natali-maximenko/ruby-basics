@@ -1,6 +1,3 @@
-require 'rspec'
-require_relative '../lib/period'
-
 describe Cinema::Period do
   describe '#initialize' do
     subject { Cinema::Period.new('11:00'..'13:00') }

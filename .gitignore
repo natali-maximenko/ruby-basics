@@ -1,5 +1,7 @@
-/upload/*
-/spec/vcr/
 *.html
 budget.yml
 /config/tmdb_api.yml
+/doc
+/spec/vcr
+/upload
+/.yardoc

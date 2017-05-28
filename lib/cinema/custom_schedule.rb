@@ -1,5 +1,4 @@
 require_relative 'period'
-require 'money'
 
 module Cinema
   Hall = Struct.new(:slug, :title, :places)
